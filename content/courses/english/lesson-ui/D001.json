@@ -1,0 +1,26 @@
+{
+  "lessonId": "D001",
+  "_note": "Site-side presentation settings for the D001 PILOT. Timings are copied from the task prompts so the recorder can show them; nothing here changes the lesson content. Proposed as contract fields in docs/contract-proposals.md (C1–C4).",
+  "tasks": {
+    "D001-T01": { "justification": { "label": "Your supporting phrase from the text" } },
+    "D001-T03": { "justification": { "label": "Your supporting phrase from the text" } },
+    "D001-T12": {
+      "speaking": {
+        "followUpFromTutorRules": true,
+        "startWithinSeconds": 15,
+        "minSeconds": 60,
+        "maxSeconds": 120,
+        "segments": [{ "label": "Your answer to the follow-up, with one paraphrase" }]
+      }
+    },
+    "D001-T13": {
+      "speaking": {
+        "segments": [
+          { "label": "Personal introduction · community group", "targetSeconds": 120 },
+          { "label": "Professional introduction · networking event", "targetSeconds": 90 },
+          { "label": "One realistic follow-up question a listener might ask" }
+        ]
+      }
+    }
+  }
+}

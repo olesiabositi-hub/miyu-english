@@ -12,6 +12,7 @@ import { esc, icon, feedback } from './ui';
 import { mountSection, type SectionCtl } from './lesson/sections';
 import { mountTask, type TaskCtl } from './lesson/tasks';
 import { richInline } from './lesson/rich-text';
+import { mountSpeaking } from './lesson/speaking';
 import { setTutorContext, setTutorSelection } from './tutor';
 
 export function renderLesson(el: HTMLElement, id: string, stepParam?: string): () => void {
@@ -33,6 +34,7 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
   setTutorContext({ lessonTitle: lesson.title, stepTitle: step.title });
 
   const sectionCtls = new Map<string, SectionCtl>();
+  let pronCleanup: (() => void) | undefined;
   const taskCtls = new Map<string, TaskCtl>();
   const mod = moduleOf(lesson.moduleId);
 
@@ -71,10 +73,16 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
     }).join('');
   }
 
+  const q = lesson.quality;
   const banner = lesson.demo
     ? `<p class="sample-note">${icon.info}<span><strong>Interface demo.</strong> Built by the site team to test every task type in contract v1.0 — not MIYU course content.</span></p>`
-    : lesson.status !== 'approved' && lesson.status !== 'published'
-      ? `<p class="sample-note">${icon.info}<span><strong>Preview · ${esc(lesson.status)}.</strong> Not yet approved for learners.</span></p>` : '';
+    : lesson.pilot
+      ? `<p class="pilot-note"><span class="pilot-tag">Pilot</span><span><strong>Pilot lesson — not methodologically approved.</strong> Status: ${esc(lesson.status)}. ${q.editorialApproved ? '' : 'Editorial review pending. '}${q.answerKeyVerified ? '' : 'Answer keys not yet verified. '}${q.audioReviewed ? '' : 'Audio not yet recorded. '}Feedback here is formative; nothing is an official assessment.</span></p>`
+      : lesson.status !== 'approved' && lesson.status !== 'published'
+        ? `<p class="sample-note">${icon.info}<span><strong>Preview · ${esc(lesson.status)}.</strong> Not yet approved for learners.</span></p>` : '';
+  const sectionOf = (t: PublicTask) => lesson.sections.find((s) => s.id === t.sectionId);
+  /** Listening task whose recording is not available: answered from the script, never counted as listening evidence. */
+  const isTranscriptPractice = (t: PublicTask) => { const s = sectionOf(t); return !!s && s.type === 'listening' && !s.audio?.length; };
   const head = (eyebrow: string, title: string, lead = '') => `<header class="step-head"><span class="eyebrow">${eyebrow}</span><h1 class="display step-head__title" tabindex="-1">${esc(title)}</h1>${lead}</header>`;
   const stepEyebrow = `Step ${stepIndex + 1} of ${steps.length}`;
   const taskNo = (t: PublicTask) => lesson.tasks.indexOf(t) + 1;
@@ -98,6 +106,14 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
     col.innerHTML = `${banner}${head(step.section ? `${stepEyebrow} · ${SECTION_LABEL[step.section.type]}` : stepEyebrow, step.title, step.section ? '' : '<p class="lead">Tasks for this lesson.</p>')}
       ${step.section ? '<section class="block block--section" data-section></section>' : ''}
       ${step.tasks.length ? `<div class="tasks">${step.tasks.map((t) => `<section class="task card" data-task="${esc(t.id)}" aria-label="Task ${taskNo(t)}"></section>`).join('')}</div>` : ''}`;
+    if (step.section?.type === 'pronunciation') {
+      col.querySelector('[data-section]')!.insertAdjacentHTML('afterend', '<section class="task card" data-pron aria-label="Pronunciation practice"><header class="task__head"><span class="task__num">Practice</span><span class="task__type">Record and compare</span><span class="task__mode">Not scored</span></header><div data-pron-rec></div></section>');
+      pronCleanup = mountSpeaking(col.querySelector<HTMLElement>('[data-pron-rec]')!, {
+        storeKey: `${lesson.courseId}:${key}:${step.section.id}:practice`, fileStem: `${lesson.id}-${step.section.id}`,
+        segments: [{ label: 'First version' }, { label: 'Second version — with clearer pauses' }],
+        state: {}, saveState: () => {}, submitted: false, practiceOnly: true, lang: course.targetLanguage.code,
+      });
+    }
     if (step.section) {
       const lp = load().lessons[key];
       sectionCtls.set(step.section.id, mountSection(col.querySelector<HTMLElement>('[data-section]')!, step.section, {
@@ -115,6 +131,7 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
           for (const other of step.tasks) if (other.dependencies.includes(task.id)) taskCtls.get(other.id)?.redraw();
           refresh();
         },
+        transcriptPractice: (task) => isTranscriptPractice(task),
         hasEvidence: (task) => !!task.scoring.evidenceSpanIds?.length,
         showEvidence,
       }));
@@ -175,6 +192,7 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
 
   refresh();
   return () => {
+    pronCleanup?.();
     sectionCtls.forEach((c) => c.destroy());
     taskCtls.forEach((c) => c.destroy());
     col.removeEventListener('mouseup', onSelect);

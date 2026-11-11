@@ -30,6 +30,18 @@ English lessons do not need to change when a later version is agreed.
 | B6 | Who owns the module index (days, skills, lesson list per module)? |
 | B7 | Answer keys on a static site — server-side check later? |
 
+## C. Conventions the D001 pilot relies on (site-side today — please confirm or replace with fields)
+
+| # | What D001 needed | How the site handles it now | Proposed field |
+|---|---|---|---|
+| C1 | T01/T03: choice **and** a written justification (rubric mode) | any `single/multiple_choice` with `scoring.mode ≠ auto` shows a justification box; choice checked, reasoning self-checked | `task.requiresJustification: true` |
+| C2 | T09 matching key | `acceptedAnswers` as `"1-C"` pairs; items read from the prompt (`1 ‘what drives me’`) | `task.matchItems: [{id,text}]`, `scoring.correctPairs` |
+| C3 | T10 gaps: one accepted answer per blank | if `acceptedAnswers.length` = number of `___`, answers are per blank | `scoring.blankAnswers: [[…],[…]]` |
+| C4 | T12/T13 timing and segments | `content/courses/english/lesson-ui/D001.json` (copied from prompts) | `task.timing {startWithinSeconds,minSeconds,maxSeconds}`, `task.segments[]` |
+| C5 | T12 unseen follow-up questions live in `tutorRules` | extracted at build from “Choose one: … \| …” | `task.followUpQuestions[]` (learner-visible on demand) |
+| C6 | Listening script contains production cues `Name [A, stress …]:` | hidden in the learner view | separate `transcript` (learner) and `productionNotes` |
+| C7 | rubric short answers: `acceptedAnswers` are model answers, not exact keys | shown after submission as “one possible answer” | `scoring.modelAnswers` |
+
 ## Suggested versioning
 
 - **v1.1.0** — only optional additions (A6, A7, A8, B1, B2, B4, B5). English v1.0.0 files stay valid.

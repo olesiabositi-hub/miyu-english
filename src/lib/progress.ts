@@ -1,8 +1,7 @@
 // All learner progress lives in this browser (docs/decisions/0001). No accounts, no server.
 // Each course has its own independent store: localStorage "miyu:<courseId>:progress:v1".
 // The learner's name is shared across courses: "miyu:profile:v1".
-import type { TaskStatus } from './scoring';
-import type { Response } from './answer-key';
+import type { TaskStatus, AnswerDetail, LearnerResponse } from './scoring';
 import { activeCourse } from './course';
 
 const keyFor = (courseId: string) => `miyu:${courseId}:progress:v1`;
@@ -10,8 +9,8 @@ const PROFILE_KEY = 'miyu:profile:v1';
 const LEGACY_EN_KEY = 'miyu-english:v2';
 const DAY = 86_400_000;
 
-export interface Answer { response: Response; status: TaskStatus; score: number | null; attempts: number; firstStatus: TaskStatus; revealed?: boolean; updatedAt: number }
-export interface LessonProgress { stepIndex: number; visited: string[]; answers: Record<string, Answer>; drafts: Record<string, string>; startedAt: number; updatedAt: number; completedAt?: number }
+export interface Answer { response: LearnerResponse; status: TaskStatus; score: number | null; attempts: number; firstStatus: TaskStatus; revealed?: boolean; detail?: AnswerDetail; updatedAt: number }
+export interface LessonProgress { stepIndex: number; visited: string[]; answers: Record<string, Answer>; drafts: Record<string, string>; taskState?: Record<string, Record<string, unknown>>; startedAt: number; updatedAt: number; completedAt?: number }
 export interface ReviewItem { id: string; kind: 'chunk' | 'prompt'; front: string; lessonKey: string; box: number; due: number }
 export interface State {
   version: 1;
@@ -73,18 +72,26 @@ export function lessonProgress(s: State, key: string): LessonProgress {
   return s.lessons[key];
 }
 
-export function recordAnswer(key: string, taskId: string, response: Response, status: TaskStatus, score: number | null): Answer {
+export function recordAnswer(key: string, taskId: string, response: LearnerResponse, status: TaskStatus, score: number | null, detail?: AnswerDetail): Answer {
   let out!: Answer;
   update((s) => {
     const lp = lessonProgress(s, key);
     const prev = lp.answers[taskId];
-    out = { response, status, score, attempts: (prev?.attempts ?? 0) + 1, firstStatus: prev?.firstStatus ?? status, revealed: prev?.revealed, updatedAt: Date.now() };
+    out = { response, status, score, attempts: (prev?.attempts ?? 0) + 1, firstStatus: prev?.firstStatus ?? status, revealed: prev?.revealed, detail, updatedAt: Date.now() };
     lp.answers[taskId] = out;
     delete lp.drafts[taskId];
     lp.updatedAt = Date.now();
     if (!key.startsWith('demo:')) s.currentLesson = key;
   });
   return out;
+}
+/** Merge extra detail into a saved answer (e.g. the learner's self-rating). */
+export function updateDetail(key: string, taskId: string, patch: Partial<AnswerDetail>) {
+  update((s) => { const a = lessonProgress(s, key).answers[taskId]; if (a) a.detail = { ...a.detail, ...patch }; });
+}
+/** Task-level scratch state that survives reloads (e.g. which follow-up question was revealed, and when). */
+export function saveTaskState(key: string, taskId: string, value: Record<string, unknown>) {
+  update((s) => { const lp = lessonProgress(s, key); lp.taskState = { ...lp.taskState, [taskId]: { ...lp.taskState?.[taskId], ...value } }; });
 }
 export function markRevealed(key: string, taskId: string) { update((s) => { const a = lessonProgress(s, key).answers[taskId]; if (a) a.revealed = true; }); }
 export function saveDraft(key: string, taskId: string, text: string): void {

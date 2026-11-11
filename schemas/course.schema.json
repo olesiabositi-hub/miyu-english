@@ -253,6 +253,13 @@
           }
         }
       }
+    },
+    "pilotLessons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Owner-approved draft lessons playable as PILOT, labelled as not methodologically approved (decision 0005)"
     }
   }
 }

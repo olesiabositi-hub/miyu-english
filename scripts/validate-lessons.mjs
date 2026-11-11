@@ -103,6 +103,19 @@ for (const file of files) {
       if (t.responseType === 'matching') E(`${at}: auto matching has no key structure in contract v1.0 — use formative or agree v1.1`);
     }
     if (sc.mode === 'rubric' && !sc.rubric) E(`${at}: rubric mode needs a rubric`);
+    if (t.responseType === 'matching' && sc.acceptedAnswers?.length) {
+      for (const a of sc.acceptedAnswers) {
+        const m = a.match(/^\s*([^\s-]+)\s*-\s*([^\s-]+)\s*$/);
+        if (!m) W(`${at}: matching answer “${a}” is not an "item-option" pair — rendered as a self-check`);
+        else if (!optIds.has(m[2])) E(`${at}: matching answer “${a}” refers to unknown option ${m[2]}`);
+      }
+    }
+    if (t.responseType === 'gap_fill' && sc.mode !== 'auto' && sc.acceptedAnswers?.length) {
+      const blanks = (t.prompt.match(BLANK) ?? []).length;
+      const perBlank = sc.acceptedAnswers.length === blanks && sc.acceptedAnswers.every((a) => !a.includes('|'));
+      const fullSets = sc.acceptedAnswers.every((a) => a.split('|').length === blanks);
+      if (!perBlank && !fullSets) W(`${at}: gap_fill answers match neither one-per-blank (${blanks}) nor "a|b|c" full sets`);
+    }
     if (sc.mode === 'formative' && sc.maxPoints !== 0) W(`${at}: formative task with maxPoints ${sc.maxPoints}`);
   }
   for (const t of L.tasks) for (const d of t.dependencies) {
@@ -115,10 +128,16 @@ for (const file of files) {
   const visit = (id) => { if (seen.get(id) === 1) return true; if (seen.get(id) === 2) return false; seen.set(id, 1); const c = deps.get(id).some(visit); seen.set(id, 2); return c; };
   for (const id of taskIds) if (visit(id)) { E(`dependency cycle involving ${id}`); break; }
 
+  const uiPath = join(root, 'content/courses', courseId, 'lesson-ui', `${L.id}.json`);
+  if (inContent && existsSync(uiPath)) {
+    const ui = JSON.parse(readFileSync(uiPath, 'utf8'));
+    for (const tid of Object.keys(ui.tasks ?? {})) if (!taskIds.has(tid)) E(`lesson-ui/${L.id}.json: unknown task ${tid}`);
+  }
   const q = L.quality;
   const publishable = (L.status === 'approved' || L.status === 'published') && q.editorialApproved && q.answerKeyVerified && q.audioReviewed;
   if ((L.status === 'approved' || L.status === 'published') && !publishable) E(`status ${L.status} but QA flags are not all true — will not be published`);
-  console.log(`  ${publishable ? '✓ publishable' : `· not published (status ${L.status})`} · ${L.sections.length} sections · ${L.tasks.length} tasks`);
+  const pilot = !publishable && inContent && (course.pilotLessons ?? []).includes(L.id);
+  console.log(`  ${publishable ? '✓ publishable' : pilot ? '◆ PILOT (owner-approved draft, decision 0005)' : `· not published (status ${L.status})`} · ${L.sections.length} sections · ${L.tasks.length} tasks`);
 }
 }
 console.log(`\n${courseIds.length} course(s), ${fileCount} lesson file(s), ${errors} error(s), ${warnings} warning(s)`);

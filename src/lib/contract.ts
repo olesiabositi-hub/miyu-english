@@ -49,8 +49,40 @@ export interface Lesson {
  *  - tutorRules and quality.notes are removed (tutor-side / editorial only),
  *  - assetRefs are resolved to URLs, or dropped when the file does not exist.
  */
-export interface PublicScoring { mode: ScoringMode; maxPoints: number; keyHashes?: string[]; keyCount?: number; rubric?: string; evidenceSpanIds?: string[] }
-export interface PublicTask extends Omit<Task, 'scoring' | 'tutorRules'> { scoring: PublicScoring }
+export interface PublicScoring {
+  mode: ScoringMode;
+  maxPoints: number;
+  /** salted hashes of exact keys (choice / ordering / auto short text / full-set gap fill) */
+  keyHashes?: string[];
+  keyCount?: number;
+  /** gap_fill with one accepted answer per blank: hashes per blank (index = blank) */
+  partHashes?: string[][];
+  /** matching: hashes of correct "item-option" pairs */
+  pairHashes?: string[];
+  /** plain model answers, shown only after submission (owner decision 0005: keys may be visible in the browser) */
+  modelAnswers?: string[];
+  rubric?: string;
+  evidenceSpanIds?: string[];
+}
+/** Site-side presentation settings for one task (content/courses/<id>/lesson-ui/<lesson>.json). */
+export interface TaskUi {
+  justification?: { label?: string };
+  speaking?: {
+    followUpFromTutorRules?: boolean;
+    startWithinSeconds?: number;
+    minSeconds?: number;
+    maxSeconds?: number;
+    segments?: { label: string; targetSeconds?: number }[];
+  };
+}
+export interface PublicTask extends Omit<Task, 'scoring' | 'tutorRules'> {
+  scoring: PublicScoring;
+  /** matching: the left-hand items (key "1", label "what drives me") */
+  matchItems?: { key: string; label: string }[];
+  /** unseen follow-up questions for spontaneous speaking, extracted at build time */
+  followUpQuestions?: string[];
+  ui?: TaskUi;
+}
 export interface PublicSection extends Omit<Section, 'assetRefs'> { audio?: string[]; images?: string[]; missingAssets?: number }
 export interface PublicLesson extends Omit<Lesson, 'tasks' | 'sections' | 'quality' | 'level' | 'language' | 'schemaVersion'> {
   courseId: string;
@@ -64,6 +96,8 @@ export interface PublicLesson extends Omit<Lesson, 'tasks' | 'sections' | 'quali
   quality: Omit<Quality, 'notes'>;
   /** true for the interface demo fixture; never real course content */
   demo?: boolean;
+  /** draft lesson released by the owner as a PILOT (course.json → pilotLessons); not methodologically approved */
+  pilot?: boolean;
 }
 
 /** Publishing gate from the contract: approved/published AND every QA flag true. */
@@ -88,6 +122,8 @@ export interface CourseConfig {
   input?: { specialCharacters?: string[] };
   features?: Record<string, FeatureState>;
   practice?: { quickChallenges?: { prompt: string; seconds?: number }[] };
+  /** Owner-approved draft lessons playable as PILOT (decision 0005). */
+  pilotLessons?: string[];
   modules: CourseModule[];
 }
 /** Course as shipped to the browser: config + its published lessons (+ optional interface demo). */

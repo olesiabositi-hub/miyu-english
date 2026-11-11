@@ -15,14 +15,15 @@ export function mountSection(host: HTMLElement, s: PublicSection, opts: { transc
   const L = `lang="${esc(opts.lang)}" dir="${opts.dir}"`;
   const isListening = s.type === 'listening' || !!s.audio?.length;
   const hasAudio = !!s.audio?.length;
-  let transcriptOpen = false;
+  /** audio pending → the script is the practice material, open from the start */
+  let transcriptOpen = isListening && !hasAudio;
   let transcriptUnlocked = opts.transcriptUnlocked || !hasAudio;
   let rate = 1;
   let highlighted: string[] = [];
 
   const audioHtml = () => {
     if (!isListening) return '';
-    if (!hasAudio) return `<div class="audio-missing">${icon.info}<div><strong>Audio is being prepared.</strong><span class="muted-sm">${s.transcript ? 'Use the transcript for now.' : 'This part will open when the recording is ready.'}</span></div></div>`;
+    if (!hasAudio) return `<div class="audio-missing">${icon.info}<div><strong>Transcript practice · audio pending</strong><span class="muted-sm">${s.transcript ? 'The recording isn’t ready yet. Read the script below instead. Your answers here practise reading the dialogue — they are not a listening assessment.' : 'This part will open when the recording is ready.'}</span></div></div>`;
     return `<div class="player card">
       ${s.audio!.map((src, i) => `<audio controls preload="metadata" src="${esc(src)}" data-audio="${i}"></audio>`).join('')}
       <div class="player__controls">
@@ -33,9 +34,10 @@ export function mountSection(host: HTMLElement, s: PublicSection, opts: { transc
   };
   const transcriptHtml = () => {
     if (!s.transcript) return '';
-    const btn = `<button class="chip" type="button" data-transcript aria-expanded="${transcriptOpen}" ${transcriptUnlocked ? '' : 'disabled'}>${transcriptOpen ? 'Hide transcript' : 'Show transcript'}</button>`;
+    const { text, hidden } = speakerScript(s.transcript);
+    const btn = `<button class="chip" type="button" data-transcript aria-expanded="${transcriptOpen}" ${transcriptUnlocked ? '' : 'disabled'}>${transcriptOpen ? 'Hide script' : 'Show script'}</button>`;
     return `<div class="transcript-wrap">${btn}${transcriptUnlocked ? '' : '<span class="muted-sm">Available after your first listen or first answer.</span>'}
-      ${transcriptOpen ? `<div class="transcript reading" ${L} data-selectable data-transcript-body>${richText(s.transcript)}</div>` : ''}</div>`;
+      ${transcriptOpen ? `<div class="transcript reading" ${L} data-selectable data-transcript-body>${richText(text)}</div>${hidden ? '<p class="muted-sm">Production notes for the future recording (tone, stress, cues) are hidden from the script.</p>' : ''}` : ''}</div>`;
   };
 
   function draw() {
@@ -100,3 +102,15 @@ export function mountSection(host: HTMLElement, s: PublicSection, opts: { transc
 }
 
 export const hasTimedSpan = (s: PublicSection | undefined, id: string) => !!s?.audio?.length && s.evidenceSpans?.some((e) => e.id === id && e.startSeconds != null);
+
+/**
+ * Scripts written for audio production carry speaker directions, e.g. "Lina [A, warm; stress queue]:".
+ * Learners see the speaker name only. (Rendering rule — the lesson file is not changed.)
+ */
+export function speakerScript(src: string): { text: string; hidden: number } {
+  let hidden = 0;
+  const text = src
+    .replace(/^(\s*[A-Z][\p{L}'’ .-]{0,30}?)\s*\[[^\]\n]*\]\s*:/gmu, (_m, name: string) => { hidden++; return `${name.trim()}:`; })
+    .replace(/^([A-Z][\p{L}'’.-]{0,20}(?: [A-Z][\p{L}'’.-]{0,20})?):(?=\s)/gmu, '**$1:**');
+  return { text, hidden };
+}
