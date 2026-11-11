@@ -1,0 +1,46 @@
+/* The Grand Academy — design tokens (approved 11.11.2026) */
+:root {
+  --night: #0E1726;
+  --night-2: #16233A;
+  --night-deep: #0A111D;
+  --lamp: #E3AA60;          /* primary CTA on dark */
+  --lamp-hover: #EDBD7A;
+  --lamp-soft: #F3D6A8;
+  --brass: #8A5A1F;         /* labels, links on light (5.6:1 on parchment) */
+  --brass-dark: #5E3C12;
+  --brass-mid: #C7934C;     /* decorative numerals only */
+  --parchment: #F6F1E8;
+  --paper: #FFFFFF;
+  --paper-warm: #FBF9F5;
+  --cream: #F3ECDF;
+  --stone: #E4DCCD;
+  --stone-soft: #EFE8DB;
+  --stone-dark: #CDBFA6;
+  --ink: #1A2333;
+  --ink-2: #444B58;
+  --muted: #575E6B;
+  --on-dark: #F6F1E8;
+  --on-dark-2: #D6DBE3;
+  --on-dark-3: #AEB6C3;
+  --success: #2E6B57;
+  --success-bg: #EEF5F1;
+  --success-line: #BFD9CC;
+  --success-ink: #1F4A3C;
+  --error: #A53A2A;
+  --error-bg: #FBEFEC;
+  --error-line: #E9C3BA;
+  --error-ink: #6E2418;
+  --mark: #F6DDB4;
+
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 24px;
+  --r-pill: 999px;
+  --shadow-lift: 0 14px 34px rgba(14, 23, 38, .12);
+  --shadow-float: 0 16px 36px rgba(14, 23, 38, .3);
+  --container: 1240px;
+  --gutter: clamp(20px, 4vw, 40px);
+}

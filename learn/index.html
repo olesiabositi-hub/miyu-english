@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MIYU English — Home</title>
+  <meta name="theme-color" content="#0E1726">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../src/styles/app.css">
+</head>
+<body>
+<a class="skip-link" href="#view">Skip to content</a>
+<header class="app-header on-dark" data-app-header>
+  <div class="app-header__row">
+    <a class="brand" href="../"><span class="brand__name">MIYU</span><span class="brand__sub">English</span></a>
+    <nav class="app-nav" aria-label="Learner">
+      <a href="#/" data-nav="home">Home</a>
+      <a href="#/lessons" data-nav="lessons">My Lessons</a>
+      <a href="#/review" data-nav="review">Review</a>
+      <a href="#/practice" data-nav="practice">Practice</a>
+      <a href="#/progress" data-nav="progress">My Progress</a>
+      <a href="#/profile" data-nav="profile">Profile</a>
+    </nav>
+    <a class="avatar" href="#/profile" aria-label="Profile" data-avatar>A</a>
+  </div>
+</header>
+
+<main id="view" tabindex="-1" class="view"></main>
+
+<nav class="bottom-nav" aria-label="Learner" data-bottom-nav>
+  <a href="#/" data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg>Home</a>
+  <a href="#/lessons" data-nav="lessons"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg>Lessons</a>
+  <a href="#/review" data-nav="review"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/></svg>Review</a>
+  <a href="#/practice" data-nav="practice"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Practice</a>
+  <a href="#/more" data-nav="more"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>More</a>
+</nav>
+
+<button class="tutor-fab" type="button" aria-haspopup="dialog" aria-controls="tutor" data-tutor-open>
+  <span class="tutor-badge" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3z"/></svg></span>
+  <span class="tutor-fab__label">Need help? Ask MIYU Tutor</span>
+</button>
+<aside class="tutor on-dark" id="tutor" role="dialog" aria-modal="false" aria-labelledby="tutor-title" hidden data-tutor></aside>
+
+<script type="module" src="../src/app/main.ts"></script>
+</body>
+</html>

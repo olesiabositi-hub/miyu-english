@@ -1,0 +1,85 @@
+{
+  "course": "MIYU English · B2 → C1",
+  "totalLessons": 90,
+  "_note": "Site-owned module index (titles from the approved brief). Lesson titles come from content/lessons/*.json. Days, skills and the per-module lesson list are to be supplied by the curriculum team.",
+  "modules": [
+    {
+      "id": "M01",
+      "number": 1,
+      "title": "Finding Your Voice",
+      "lessons": []
+    },
+    {
+      "id": "M02",
+      "number": 2,
+      "title": "The Social Side of English",
+      "lessons": []
+    },
+    {
+      "id": "M03",
+      "number": 3,
+      "title": "Life Beyond Routine",
+      "lessons": []
+    },
+    {
+      "id": "M04",
+      "number": 4,
+      "title": "Work Without Borders",
+      "lessons": []
+    },
+    {
+      "id": "M05",
+      "number": 5,
+      "title": "Mind & Body",
+      "lessons": []
+    },
+    {
+      "id": "M06",
+      "number": 6,
+      "title": "Inside a Modern Company",
+      "lessons": []
+    },
+    {
+      "id": "M07",
+      "number": 7,
+      "title": "Culture, Creativity & Ideas",
+      "lessons": []
+    },
+    {
+      "id": "M08",
+      "number": 8,
+      "title": "Marketing in the Real World",
+      "lessons": []
+    },
+    {
+      "id": "M09",
+      "number": 9,
+      "title": "Money, Society & Decisions",
+      "lessons": []
+    },
+    {
+      "id": "M10",
+      "number": 10,
+      "title": "Technology & Tomorrow",
+      "lessons": []
+    },
+    {
+      "id": "M11",
+      "number": 11,
+      "title": "Career Without Limits",
+      "lessons": []
+    },
+    {
+      "id": "M12",
+      "number": 12,
+      "title": "Confidence at C1",
+      "lessons": []
+    },
+    {
+      "id": "M13",
+      "number": 13,
+      "title": "Final Challenge",
+      "lessons": []
+    }
+  ]
+}

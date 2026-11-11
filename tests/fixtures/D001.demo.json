@@ -1,0 +1,508 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "D001",
+  "moduleId": "M01",
+  "sequence": 1,
+  "title": "Interface demo: Introducing Yourself",
+  "level": "B2",
+  "status": "draft",
+  "language": "en",
+  "durationMinutes": 90,
+  "outcomes": [
+    "INTERFACE DEMO — not course content: exercises every response type and scoring mode of contract v1.0.",
+    "Introduce yourself with a field, a concrete detail and a personal touch."
+  ],
+  "cefrScale": "demo",
+  "lexicalChunks": [
+    "I've just joined…",
+    "most of my work so far",
+    "that kind of thing",
+    "look forward to + -ing",
+    "less boring than it sounds",
+    "outside the office",
+    "a bit new to me",
+    "it's going about as well as you'd expect"
+  ],
+  "grammar": [
+    "look forward to + -ing"
+  ],
+  "sections": [
+    {
+      "id": "s-intro",
+      "type": "intro",
+      "title": "Warm-up",
+      "content": "Think of the last time you introduced yourself to a group. What did you say first?"
+    },
+    {
+      "id": "s-reading",
+      "type": "reading",
+      "title": "First day, new team",
+      "content": "Hi everyone, I'm Lena. I've just joined the product team from a small design studio in Tbilisi, so this is all a bit new to me.\n\nMost of my work so far has been about making complicated things feel simple — onboarding screens, checkout flows, **that kind of thing**.\n\nOutside work, I'm slowly learning to bake proper sourdough. It's going about as well as you'd expect. I'm really looking forward to working with you all.",
+      "evidenceSpans": [
+        {
+          "id": "ev-sourdough",
+          "text": "It's going about as well as you'd expect."
+        },
+        {
+          "id": "ev-joined",
+          "text": "I've just joined the product team"
+        }
+      ]
+    },
+    {
+      "id": "s-vocab",
+      "type": "vocabulary",
+      "title": "Useful chunks",
+      "content": "- **I've just joined…** — I've just joined the product team.\n- **most of my work so far** — Most of my work so far has been about onboarding.\n- **that kind of thing** — Checkout flows, sign-up forms, that kind of thing."
+    },
+    {
+      "id": "s-grammar",
+      "type": "grammar",
+      "title": "Look forward to + -ing",
+      "content": "In *look forward to*, **to** is a preposition, so it is followed by a noun or an *-ing* form: *I'm looking forward to working with you.*"
+    },
+    {
+      "id": "s-listening",
+      "type": "listening",
+      "title": "Marco at a meetup",
+      "content": "Listen to Marco introducing himself at a meetup.",
+      "assetRefs": [
+        "assets/lessons/D001/marco-meetup.mp3"
+      ],
+      "transcript": "Hey, I'm Marco. I moved here about a year ago for work — I'm a data analyst at a logistics company, which is less boring than it sounds, I promise.\n\nHonestly, I came tonight because I don't know many people outside the office yet.",
+      "evidenceSpans": [
+        {
+          "id": "ev-reason",
+          "text": "I don't know many people outside the office yet",
+          "startSeconds": 9.5,
+          "endSeconds": 13
+        }
+      ]
+    },
+    {
+      "id": "s-pron",
+      "type": "pronunciation",
+      "title": "Linking sounds",
+      "content": "Notice how *just joined* and *a bit new* link together in fast speech."
+    },
+    {
+      "id": "s-writing",
+      "type": "writing",
+      "title": "Write it",
+      "content": "A short written introduction for a team chat."
+    },
+    {
+      "id": "s-speaking",
+      "type": "speaking",
+      "title": "Real-life challenge",
+      "content": "You’ve just joined a new team."
+    },
+    {
+      "id": "s-mediation",
+      "type": "mediation",
+      "title": "Pass it on",
+      "content": "A new colleague missed the meeting. Help them understand who Lena is."
+    },
+    {
+      "id": "s-reflection",
+      "type": "reflection",
+      "title": "Reflect",
+      "content": "Look back at what you practised today."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "D001-T01",
+      "type": "warm_up",
+      "sectionId": "s-intro",
+      "responseType": "single_choice",
+      "prompt": "Which reply sounds most natural when someone says “So, what do you do?”",
+      "options": [
+        {
+          "id": "a",
+          "text": "I am working as a marketing specialist since three years."
+        },
+        {
+          "id": "b",
+          "text": "I work in marketing — I look after our social media."
+        },
+        {
+          "id": "c",
+          "text": "My profession is marketing."
+        }
+      ],
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 1,
+        "correctOptionIds": [
+          "b"
+        ]
+      },
+      "feedback": "Natural speakers often give the field first, then one concrete detail.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T02",
+      "type": "gist",
+      "sectionId": "s-reading",
+      "responseType": "single_choice",
+      "prompt": "Why does Lena mention sourdough?",
+      "options": [
+        {
+          "id": "a",
+          "text": "To show she is an expert baker."
+        },
+        {
+          "id": "b",
+          "text": "To add a light, personal detail that makes her easier to talk to."
+        },
+        {
+          "id": "c",
+          "text": "Because the team asked about her hobbies."
+        }
+      ],
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 1,
+        "correctOptionIds": [
+          "b"
+        ],
+        "evidenceSpanIds": [
+          "ev-sourdough"
+        ]
+      },
+      "feedback": "The self-deprecating line shows she isn’t boasting — it invites conversation.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T03",
+      "type": "detail",
+      "sectionId": "s-reading",
+      "responseType": "multiple_choice",
+      "prompt": "Which TWO things does Lena tell the team about her work?",
+      "options": [
+        {
+          "id": "a",
+          "text": "She has just joined the product team."
+        },
+        {
+          "id": "b",
+          "text": "She manages the design studio."
+        },
+        {
+          "id": "c",
+          "text": "She makes complicated things feel simple."
+        },
+        {
+          "id": "d",
+          "text": "She teaches baking."
+        }
+      ],
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 2,
+        "correctOptionIds": [
+          "a",
+          "c"
+        ],
+        "evidenceSpanIds": [
+          "ev-joined"
+        ]
+      },
+      "feedback": "She mentions her new team and the focus of her past work.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T04",
+      "type": "chunk_recall",
+      "sectionId": "s-vocab",
+      "responseType": "short_text",
+      "prompt": "Complete the chunk: “Checkout flows, sign-up forms, that ____ of thing.” Type the missing word.",
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 1,
+        "acceptedAnswers": [
+          "kind",
+          "sort"
+        ]
+      },
+      "feedback": "“That kind of thing” (or “that sort of thing”) closes a list informally.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T05",
+      "type": "form_focus",
+      "sectionId": "s-grammar",
+      "responseType": "gap_fill",
+      "prompt": "I'm really looking forward ___ with you all. (work)",
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 1,
+        "acceptedAnswers": [
+          "to working"
+        ]
+      },
+      "feedback": "After “look forward to”, use the -ing form.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T06",
+      "type": "form_focus",
+      "sectionId": "s-grammar",
+      "responseType": "gap_fill",
+      "prompt": "We've been looking forward ___ ___ the new team. (meet)",
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 2,
+        "acceptedAnswers": [
+          "to|meeting"
+        ]
+      },
+      "feedback": "“to” is a preposition here, so the verb takes -ing.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T07",
+      "type": "structure",
+      "sectionId": "s-grammar",
+      "responseType": "ordering",
+      "prompt": "Put the parts of a natural self-introduction in a typical order.",
+      "options": [
+        {
+          "id": "name",
+          "text": "Hi, I'm Lena."
+        },
+        {
+          "id": "role",
+          "text": "I've just joined the product team."
+        },
+        {
+          "id": "detail",
+          "text": "Most of my work so far has been about onboarding."
+        },
+        {
+          "id": "close",
+          "text": "Looking forward to working with you."
+        }
+      ],
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 1,
+        "correctOptionIds": [
+          "name",
+          "role",
+          "detail",
+          "close"
+        ]
+      },
+      "feedback": "Name → role → concrete detail → friendly close.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T08",
+      "type": "chunk_meaning",
+      "sectionId": "s-vocab",
+      "responseType": "matching",
+      "prompt": "Match each chunk with its meaning.",
+      "options": [
+        {
+          "id": "a",
+          "text": "a bit new to me — unfamiliar"
+        },
+        {
+          "id": "b",
+          "text": "so far — until now"
+        },
+        {
+          "id": "c",
+          "text": "that kind of thing — and similar things"
+        }
+      ],
+      "scoring": {
+        "mode": "formative",
+        "maxPoints": 0
+      },
+      "feedback": "Matching key structure is not defined in contract v1.0 — rendered as a self-check.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T09",
+      "type": "listening_gist",
+      "sectionId": "s-listening",
+      "responseType": "single_choice",
+      "prompt": "Why did Marco come to the meetup?",
+      "options": [
+        {
+          "id": "a",
+          "text": "His company organised it."
+        },
+        {
+          "id": "b",
+          "text": "He wants to meet people outside work."
+        },
+        {
+          "id": "c",
+          "text": "He is giving a talk about data."
+        }
+      ],
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 1,
+        "correctOptionIds": [
+          "b"
+        ],
+        "evidenceSpanIds": [
+          "ev-reason"
+        ]
+      },
+      "feedback": "He says he doesn't know many people outside the office yet.",
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T10",
+      "type": "listening_detail",
+      "sectionId": "s-listening",
+      "responseType": "short_text",
+      "prompt": "What kind of company does Marco work for? (one word)",
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 1,
+        "acceptedAnswers": [
+          "logistics",
+          "a logistics company",
+          "logistics company"
+        ]
+      },
+      "dependencies": [
+        "D001-T09"
+      ],
+      "feedback": "“I'm a data analyst at a logistics company.”",
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T11",
+      "type": "pronunciation",
+      "sectionId": "s-pron",
+      "responseType": "audio_recording",
+      "prompt": "Record: “I've just joined the team — it's all a bit new to me.” Link the sounds.",
+      "scoring": {
+        "mode": "formative",
+        "maxPoints": 0
+      },
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T12",
+      "type": "guided_writing",
+      "sectionId": "s-writing",
+      "responseType": "long_text",
+      "prompt": "Write a 3–4 sentence introduction for your new team’s chat.",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 4,
+        "rubric": "1 point each: who you are and your role; one concrete detail about your work; one light personal detail; a friendly closing line."
+      },
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T13",
+      "type": "real_life_challenge",
+      "sectionId": "s-speaking",
+      "responseType": "audio_recording",
+      "prompt": "Introduce yourself in about 30 seconds — then try again for a different audience.",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 4,
+        "rubric": "Clear role · one concrete detail · one personal touch · natural closing."
+      },
+      "dependencies": [
+        "D001-T12"
+      ],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T14",
+      "type": "mediation",
+      "sectionId": "s-mediation",
+      "responseType": "long_text",
+      "prompt": "A colleague missed the meeting. In 2–3 sentences, tell them who Lena is and what she’ll work on.",
+      "scoring": {
+        "mode": "manual",
+        "maxPoints": 3,
+        "rubric": "Accurate, concise, natural register."
+      },
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    },
+    {
+      "id": "D001-T15",
+      "type": "reflection",
+      "sectionId": "s-reflection",
+      "responseType": "self_reflection",
+      "prompt": "Which chunk from today will you use this week, and where?",
+      "scoring": {
+        "mode": "formative",
+        "maxPoints": 0
+      },
+      "dependencies": [],
+      "tutorRules": [
+        "Do not reveal the answer before the first attempt."
+      ]
+    }
+  ],
+  "review": {
+    "retrievalPrompts": [
+      "How do you close a list informally?",
+      "What follows “look forward to”?",
+      "Give a light personal detail you could use when introducing yourself."
+    ],
+    "delayedTransfer": "In the next few days, introduce yourself to someone new in English using one chunk from this lesson."
+  },
+  "quality": {
+    "editorialApproved": false,
+    "answerKeyVerified": false,
+    "audioReviewed": false,
+    "notes": [
+      "Interface demo fixture written by the site team. Not methodology content."
+    ]
+  }
+}
