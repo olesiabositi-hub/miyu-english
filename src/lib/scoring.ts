@@ -1,5 +1,5 @@
 import type { PublicLesson, PublicTask } from './contract';
-import { canonical, hashInput, sha256Hex, type Response } from './answer-key';
+import { canonical, hashInput, sha256Hex, DEFAULT_RULES, type Response, type MatchRules } from './answer-key';
 
 /**
  * correct / incorrect  — auto-scored
@@ -14,12 +14,12 @@ export function canAutoCheck(t: PublicTask): boolean {
   return t.scoring.mode === 'auto' && !!t.scoring.keyHashes?.length;
 }
 
-export async function evaluate(lesson: PublicLesson, task: PublicTask, response: Response): Promise<Evaluation> {
+export async function evaluate(lesson: PublicLesson, task: PublicTask, response: Response, rules: MatchRules = DEFAULT_RULES): Promise<Evaluation> {
   const max = task.scoring.maxPoints;
   switch (task.scoring.mode) {
     case 'auto': {
       if (!canAutoCheck(task)) return { status: 'submitted', score: null, maxPoints: max };
-      const h = await sha256Hex(hashInput(lesson.id, task.id, canonical(task.responseType, response)));
+      const h = await sha256Hex(hashInput(lesson.courseId, lesson.id, task.id, canonical(task.responseType, response, rules)));
       const ok = task.scoring.keyHashes!.includes(h);
       return { status: ok ? 'correct' : 'incorrect', score: ok ? max : 0, maxPoints: max };
     }
@@ -33,7 +33,7 @@ export async function evaluate(lesson: PublicLesson, task: PublicTask, response:
 export async function revealChoiceKey(lesson: PublicLesson, task: PublicTask): Promise<string[] | null> {
   const opts = (task.options ?? []).map((o) => o.id);
   const hashes = task.scoring.keyHashes ?? [];
-  const test = async (r: Response) => hashes.includes(await sha256Hex(hashInput(lesson.id, task.id, canonical(task.responseType, r))));
+  const test = async (r: Response) => hashes.includes(await sha256Hex(hashInput(lesson.courseId, lesson.id, task.id, canonical(task.responseType, r))));
   if (task.responseType === 'single_choice') { for (const o of opts) if (await test(o)) return [o]; return null; }
   if (task.responseType === 'multiple_choice' && opts.length <= 10) {
     for (let mask = 1; mask < 1 << opts.length; mask++) { const pick = opts.filter((_, i) => mask & (1 << i)); if (await test(pick)) return pick; }

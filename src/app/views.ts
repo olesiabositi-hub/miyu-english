@@ -1,7 +1,6 @@
-import { load, update, isFirstVisit, isAfterBreak, dueReview, gradeReview, reset, exportJson, canPersist, logDaily, today, type State } from '../lib/progress';
-import { lessonList, progressKey, routeId, getLesson, demo } from '../lib/catalog';
+import { load, update, loadProfile, saveProfile, isFirstVisit, isAfterBreak, dueReview, gradeReview, reset, exportJson, canPersist, logDaily, today, type State } from '../lib/progress';
+import { lessonList, progressKey, routeId, getLesson, demoLesson, modules, pad2, totalLessons, cfg, levelRange } from '../lib/course';
 import { buildSteps } from '../lib/lesson-model';
-import { modules, pad2, TOTAL_LESSONS } from '../lib/curriculum';
 import { courseProgress, nextLesson, resumePoint, stepsDone, currentFocus, moduleStatus, skillEvidence } from '../lib/derive';
 import { esc, icon, feedback, pct } from './ui';
 import { mountOpenResponse } from './open-response';
@@ -16,6 +15,7 @@ function storageNote(): string {
 /* ------------------------------------------------------------------ HOME */
 export function renderHome(el: HTMLElement): Cleanup {
   const s = load();
+  const demo = demoLesson();
   const first = isFirstVisit(s);
   const afterBreak = isAfterBreak(s);
   const lesson = nextLesson(s);
@@ -33,7 +33,7 @@ export function renderHome(el: HTMLElement): Cleanup {
     hero = `<div class="resume__body">
       <span class="eyebrow">Entry diagnostic · 4 skills</span>
       <h2 class="display resume__title">Let’s find your starting point.</h2>
-      <p class="resume__text">Reading, listening, writing and speaking — so your route through the 90 lessons fits you.</p>
+      <p class="resume__text">Reading, listening, writing and speaking — so your route through the ${totalLessons()} lessons fits you.</p>
       <div class="resume__actions">
         <a class="btn btn--lamp btn--lg" href="#/diagnostic">Begin Assessment</a>
         ${lesson ? `<a class="resume__link" href="#/lesson/${routeId(lesson)}">Skip for now — start Lesson ${lesson.sequence}</a>` : ''}
@@ -43,7 +43,7 @@ export function renderHome(el: HTMLElement): Cleanup {
     const done = stepsDone(lesson, lp);
     const segs = steps.map((_, i) => `<span class="${i < done ? 'on' : ''}"></span>`).join('');
     hero = `<div class="resume__body">
-      <span class="eyebrow">Lesson ${lesson.sequence} of ${TOTAL_LESSONS}</span>
+      <span class="eyebrow">Lesson ${lesson.sequence} of ${totalLessons()}</span>
       <h2 class="display resume__title">${esc(lesson.title)}</h2>
       <div class="resume__progress">
         <div class="resume__meta"><span>${done} of ${steps.length} steps completed</span><span>${canPersist() ? 'Saved' : ''}</span></div>
@@ -55,7 +55,7 @@ export function renderHome(el: HTMLElement): Cleanup {
         <a class="btn btn--lamp btn--lg" href="#/lesson/${routeId(lesson)}">${started ? 'Continue Lesson' : 'Start Lesson'}</a>
         ${afterBreak ? '<a class="btn btn--ghost-dark btn--lg" href="#/review">Start a 15-minute review</a>' : ''}
       </div></div>`;
-  } else if (!lessonList.length) {
+  } else if (!lessonList().length) {
     hero = `<div class="resume__body">
       <span class="eyebrow">Lessons are being prepared</span>
       <h2 class="display resume__title">Your first lesson is on its way.</h2>
@@ -80,7 +80,7 @@ export function renderHome(el: HTMLElement): Cleanup {
   el.innerHTML = `<div class="page">
     ${storageNote()}
     <div class="page__head">
-      <p class="eyebrow">${first ? 'Welcome to MIYU English' : 'Your pace · your progress'}</p>
+      <p class="eyebrow">${first ? `Welcome to ${esc(cfg().title)}` : 'Your pace · your progress'}</p>
       <h1 class="display page__title">${welcome}</h1>
     </div>
     <div class="home-grid">
@@ -101,7 +101,7 @@ export function renderHome(el: HTMLElement): Cleanup {
       <div class="home-grid__side">
         <a class="tile card lift" href="#/daily">
           <span class="tile__icon tile__icon--dark display">15</span>
-          <span class="tile__text"><strong>Daily 15</strong><span>A little English still counts.</span></span>
+          <span class="tile__text"><strong>Daily 15</strong><span>A little ${cfg().targetLanguage.name} still counts.</span></span>
           <span class="tile__go">Start →</span>
         </a>
         <a class="tile card lift" href="#/review">
@@ -120,7 +120,7 @@ export function renderHome(el: HTMLElement): Cleanup {
       </div>
     </div>
     <section class="card journey" aria-labelledby="journey-title">
-      <div class="journey__head"><h2 class="display" id="journey-title">Your journey · ${modules.length} modules</h2><a class="link-arrow" href="#/lessons">View My Lessons →</a></div>
+      <div class="journey__head"><h2 class="display" id="journey-title">Your journey · ${modules().length} modules</h2><a class="link-arrow" href="#/lessons">View My Lessons →</a></div>
       <div class="journey__scroll"><ol class="journey__list">${journey}</ol></div>
     </section>
   </div>`;
@@ -129,6 +129,7 @@ export function renderHome(el: HTMLElement): Cleanup {
 /* --------------------------------------------------------------- LESSONS */
 export function renderLessons(el: HTMLElement): Cleanup {
   const s = load();
+  const demo = demoLesson();
   const items = moduleStatus(s).map(({ module: m, published, status }) => {
     const rows = published.map((L) => {
       const lp = s.lessons[progressKey(L)];
@@ -142,15 +143,15 @@ export function renderLessons(el: HTMLElement): Cleanup {
     </details>`;
   }).join('');
   el.innerHTML = `<div class="page page--narrow">
-    <div class="page__head"><p class="eyebrow">${lessonList.length} of ${TOTAL_LESSONS} lessons published</p><h1 class="display page__title">My Lessons</h1></div>
-    ${demo && !lessonList.length ? `<a class="tile card lift" href="#/lesson/demo"><span class="tile__icon">${icon.spark}</span><span class="tile__text"><strong>Interface demo</strong><span>Try every task type while the first lessons are in review. Not course content.</span></span><span class="tile__go">Open →</span></a>` : ''}
+    <div class="page__head"><p class="eyebrow">${lessonList().length} of ${totalLessons()} lessons published</p><h1 class="display page__title">My Lessons</h1></div>
+    ${demo && !lessonList().length ? `<a class="tile card lift" href="#/lesson/demo"><span class="tile__icon">${icon.spark}</span><span class="tile__text"><strong>Interface demo</strong><span>Try every task type while the first lessons are in review. Not course content.</span></span><span class="tile__go">Open →</span></a>` : ''}
     <div class="modules">${items}</div>
   </div>`;
 }
 
 /* ---------------------------------------------------------------- REVIEW */
 function lessonName(key: string): string {
-  const l = key.startsWith('demo:') ? demo : getLesson(key);
+  const l = key.startsWith('demo:') ? demoLesson() : getLesson(key);
   return l ? (l.demo ? 'the demo' : `Lesson ${l.sequence}`) : 'a lesson';
 }
 export function renderReview(el: HTMLElement): Cleanup {
@@ -165,7 +166,7 @@ export function renderReview(el: HTMLElement): Cleanup {
     else if (!item) body = `<div class="empty card">${icon.check}<h2 class="display">You’re all caught up.</h2><p>${reviewed ? `${reviewed} reviewed — nice work. ` : ''}Come back after your next lesson.</p><a class="btn btn--ink" href="#/">Back to Home</a></div>`;
     else body = `<div class="flash card">
         <span class="muted-sm">${queue.length} left · ${item.kind === 'chunk' ? 'chunk' : 'recall question'} from ${esc(lessonName(item.lessonKey))}</span>
-        <p class="display flash__phrase">${esc(item.front)}</p>
+        <p class="display flash__phrase" lang="${esc(cfg().targetLanguage.code)}">${esc(item.front)}</p>
         ${shown ? `<p class="muted-sm">How did it go?</p>
           <div class="flash__actions"><button class="btn btn--ghost" type="button" data-grade="0">Again soon</button><button class="btn btn--ink" type="button" data-grade="1">Got it</button></div>`
         : `<p class="muted-sm">${item.kind === 'chunk' ? 'Say a sentence of your own with it, out loud.' : 'Answer out loud or in your head.'}</p><div class="flash__actions"><button class="btn btn--ink" type="button" data-show>Done</button></div>`}
@@ -192,11 +193,16 @@ export function renderReview(el: HTMLElement): Cleanup {
 
 /* -------------------------------------------------------------- PRACTICE */
 export function renderPractice(el: HTMLElement): Cleanup {
+  const challenge = cfg().practice?.quickChallenges?.[0];
+  if (!challenge) {
+    el.innerHTML = `<div class="page page--narrow"><div class="page__head"><h1 class="display page__title">Practice</h1></div><div class="empty card"><h2 class="display">Practice is coming soon</h2><p>Quick challenges for this course are being prepared.</p></div></div>`;
+    return;
+  }
   el.innerHTML = `<div class="page page--narrow">
-    <div class="page__head"><p class="eyebrow">Think in English</p><h1 class="display page__title">Practice</h1></div>
+    <div class="page__head"><p class="eyebrow">Think in ${cfg().targetLanguage.name}</p><h1 class="display page__title">Practice</h1></div>
     <section class="card practice" aria-labelledby="qc">
       <span class="eyebrow">Quick challenge</span>
-      <h2 class="display practice__q" id="qc">“You have ten seconds: explain why you’re running late to a meeting.”</h2>
+      <h2 class="display practice__q" id="qc" lang="${esc(cfg().targetLanguage.code)}">“${esc(challenge.prompt)}”</h2>
       <div data-or></div>
     </section>
     <div class="tile tile--soon">
@@ -206,7 +212,8 @@ export function renderPractice(el: HTMLElement): Cleanup {
   </div>`;
   const host = el.querySelector<HTMLElement>('[data-or]')!;
   return mountOpenResponse(host, {
-    id: 'practice-late', mode: 'speak', targetSeconds: 10, allowSwitch: true, submitLabel: 'Done',
+    id: 'practice-quick', mode: 'speak', targetSeconds: challenge.seconds, allowSwitch: true, submitLabel: 'Done',
+    lang: cfg().targetLanguage.code, languageName: cfg().targetLanguage.name, dir: cfg().targetLanguage.dir, specialCharacters: cfg().input?.specialCharacters,
     onSubmit: () => { host.insertAdjacentHTML('beforeend', feedback('ok', 'Nice. Try it once more with a different reason — then once more, faster.')); },
   });
 }
@@ -223,7 +230,7 @@ export function renderProgress(el: HTMLElement): Cleanup {
       <span class="skill__val">${v.checked ? `${v.firstTry}/${v.checked} right first time` : v.submitted ? '' : 'No evidence yet'}${v.submitted ? `${v.checked ? ' · ' : ''}${v.submitted} submitted` : ''}</span>
     </li>`).join('');
   el.innerHTML = `<div class="page page--narrow">
-    <div class="page__head"><p class="eyebrow">C1-focused course progress</p><h1 class="display page__title">My Progress</h1></div>
+    <div class="page__head"><p class="eyebrow">${esc(levelRange())} course progress</p><h1 class="display page__title">My Progress</h1></div>
     <div class="stats">
       <div class="card stat"><span class="display stat__num">${cp.done}</span><span>lessons completed</span></div>
       <div class="card stat"><span class="display stat__num">${cp.percent}%</span><span>of the course</span></div>
@@ -241,23 +248,22 @@ export function renderProgress(el: HTMLElement): Cleanup {
 /* --------------------------------------------------------------- PROFILE */
 export function renderProfile(el: HTMLElement): Cleanup {
   const draw = (msg = '') => {
-    const s = load();
     el.innerHTML = `<div class="page page--narrow">
       <div class="page__head"><p class="eyebrow">Settings</p><h1 class="display page__title">Profile</h1></div>
       ${msg}
       <form class="card form" data-name-form>
         <label for="name">Your first name <span class="muted-sm">(optional, stays in this browser)</span></label>
-        <div class="form__row"><input id="name" name="name" autocomplete="given-name" value="${esc(s.name ?? '')}" maxlength="40"><button class="btn btn--ink" type="submit">Save</button></div>
+        <div class="form__row"><input id="name" name="name" autocomplete="given-name" value="${esc(loadProfile().name ?? '')}" maxlength="40"><button class="btn btn--ink" type="submit">Save</button></div>
       </form>
       <section class="card form">
         <h2 class="display">Your data</h2>
-        <p class="muted-sm">There are no accounts yet: your progress is stored only in this browser on this device. Clearing browser data removes it.</p>
+        <p class="muted-sm">There are no accounts yet: your progress in ${esc(cfg().title)} is stored only in this browser on this device. Each course keeps its own progress. Clearing browser data removes it.</p>
         <div class="form__row">
           <button class="btn btn--ghost" type="button" data-export>Download my progress</button>
-          <button class="btn btn--ghost danger" type="button" data-reset>Reset progress</button>
+          <button class="btn btn--ghost danger" type="button" data-reset>Reset ${esc(cfg().title)} progress</button>
         </div>
         <div data-confirm hidden class="confirm">
-          <p>Delete all saved answers and progress in this browser? This cannot be undone.</p>
+          <p>Delete all saved answers and progress for ${esc(cfg().title)} in this browser? Other courses are not affected. This cannot be undone.</p>
           <div class="form__row"><button class="btn btn--ink" type="button" data-reset-yes>Yes, reset</button><button class="btn btn--ghost" type="button" data-reset-no>Cancel</button></div>
         </div>
       </section>
@@ -266,7 +272,7 @@ export function renderProfile(el: HTMLElement): Cleanup {
   const onSubmit = (e: Event) => {
     e.preventDefault();
     const v = (el.querySelector('#name') as HTMLInputElement).value.trim();
-    update((s) => { s.name = v || undefined; });
+    saveProfile({ ...loadProfile(), name: v || undefined });
     setAvatar();
     draw(feedback('ok', 'Saved.'));
   };
@@ -290,15 +296,16 @@ export function renderProfile(el: HTMLElement): Cleanup {
 }
 
 export function setAvatar() {
-  const n = load().name;
+  // name is shared across courses (miyu:profile:v1)
+  const n = loadProfile().name;
   const a = document.querySelector<HTMLElement>('[data-avatar]');
   if (a) a.textContent = n ? n[0].toUpperCase() : '·';
 }
-setAvatar();
 
 /* ------------------------------------------------------------ DIAGNOSTIC */
 export function renderDiagnostic(el: HTMLElement): Cleanup {
-  const first = lessonList[0];
+  const first = lessonList()[0];
+  const demo = demoLesson();
   el.innerHTML = `<div class="page page--narrow">
     <div class="page__head"><p class="eyebrow">Entry Diagnostic</p><h1 class="display page__title">Let’s find your starting point.</h1></div>
     <section class="card prose-card">
@@ -327,7 +334,7 @@ export function renderDaily(el: HTMLElement): Cleanup {
       <li class="card"><span class="daily-list__min">5 min</span><div><strong>Reading or listening</strong><p class="muted-sm">Daily sets will come with the lesson content. For now, re-read a text from your last lesson.</p></div><a class="btn btn--ghost" href="#/lessons">My Lessons</a></li>
       <li class="card"><span class="daily-list__min">5 min</span><div><strong>Speaking or writing</strong><p class="muted-sm">Try the quick challenge.</p></div><a class="btn btn--ghost" href="#/practice">Practice</a></li>
     </ol>
-    <div class="form__row">${doneToday ? feedback('ok', `Logged today: ${doneToday} min. A little English still counts.`) : '<button class="btn btn--lamp" type="button" data-log>I did my 15 minutes today</button>'}</div>
+    <div class="form__row">${doneToday ? feedback('ok', `Logged today: ${doneToday} min. A little ${cfg().targetLanguage.name} still counts.`) : '<button class="btn btn--lamp" type="button" data-log>I did my 15 minutes today</button>'}</div>
     <p class="muted-sm">Daily 15 does not mark your main lesson as completed.</p>
   </div>`;
   const onClick = (e: Event) => { if ((e.target as HTMLElement).closest('[data-log]')) { logDaily(15); renderDaily(el); } };

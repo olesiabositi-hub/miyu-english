@@ -362,3 +362,12 @@ body[data-route='lesson'] .tutor-fab__label { position: absolute; width: 1px; he
 .opt.is-correct:has(input:checked) .opt__badge { background: var(--success); color: #fff; }
 .opt.is-wrong:has(input:checked) { border-color: var(--error); }
 .opt.is-wrong:has(input:checked) .opt__badge { background: var(--error); color: #fff; }
+
+/* ---------- Multi-language input & pronunciation ---------- */
+.char-palette { display: flex; flex-wrap: wrap; gap: 6px; }
+.char-key { min-width: 44px; min-height: 44px; padding: 0 10px; border-radius: var(--r-sm); border: 1px solid var(--stone); background: var(--paper); font-family: var(--font-content); font-size: 18px; color: var(--ink); }
+.char-key:hover { border-color: var(--brass-mid); }
+.model-audio { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: var(--r-sm); background: var(--cream); }
+.model-audio .eyebrow { font-size: 11px; letter-spacing: .14em; }
+.model-audio audio { width: 100%; }
+.model-audio--missing { background: transparent; padding: 0; }

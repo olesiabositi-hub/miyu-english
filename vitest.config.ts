@@ -1,2 +1,3 @@
 import { defineConfig } from 'vitest/config';
-export default defineConfig({ test: { environment: 'node', include: ['tests/**/*.test.ts'] } });
+import courses from './build/lessons-plugin';
+export default defineConfig({ plugins: [courses()], test: { environment: 'node', include: ['tests/**/*.test.ts'] } });

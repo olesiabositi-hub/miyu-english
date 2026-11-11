@@ -1,7 +1,60 @@
 {
-  "course": "MIYU English · B2 → C1",
+  "$schema": "../../../schemas/course.schema.json",
+  "id": "english",
+  "title": "MIYU English",
+  "tagline": "English for Life & Global Careers",
+  "targetLanguage": {
+    "code": "en",
+    "name": "English",
+    "script": "Latn",
+    "dir": "ltr"
+  },
+  "uiLanguage": "en",
+  "explanationLanguages": [
+    "ru"
+  ],
+  "levels": {
+    "from": "B2",
+    "to": "C1",
+    "scale": [
+      "B2",
+      "B2+",
+      "C1"
+    ],
+    "framework": "CEFR"
+  },
   "totalLessons": 90,
-  "_note": "Site-owned module index (titles from the approved brief). Lesson titles come from content/lessons/*.json. Days, skills and the per-module lesson list are to be supplied by the curriculum team.",
+  "contract": {
+    "version": "1.0.0",
+    "schema": "schemas/lesson.schema.json",
+    "lessonsDir": "content/lessons",
+    "assetsDir": "public/assets/lessons",
+    "lessonIdPattern": "^D[0-9]{3}$"
+  },
+  "theme": "grand-academy",
+  "answerMatching": {
+    "caseSensitive": false,
+    "ignoreDiacritics": false,
+    "ignoreTrailingPunctuation": true
+  },
+  "input": {
+    "specialCharacters": []
+  },
+  "features": {
+    "entryDiagnostic": "planned",
+    "speakingStudio": "planned",
+    "daily15": "available",
+    "tutor": "planned",
+    "explainInExplanationLanguage": "planned"
+  },
+  "practice": {
+    "quickChallenges": [
+      {
+        "prompt": "You have ten seconds: explain why you’re running late to a meeting.",
+        "seconds": 10
+      }
+    ]
+  },
   "modules": [
     {
       "id": "M01",
@@ -81,5 +134,6 @@
       "title": "Final Challenge",
       "lessons": []
     }
-  ]
+  ],
+  "_note": "Module titles are from the approved design brief. Days, skills and per-module lesson lists are supplied by the curriculum team."
 }

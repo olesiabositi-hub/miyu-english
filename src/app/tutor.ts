@@ -1,4 +1,20 @@
 import { esc, icon } from './ui';
+import { cfg } from '../lib/course';
+
+/** “Explain in Russian” etc. — explanation language and target language come from course.json. */
+function actions(): [string, string][] {
+  const c = cfg();
+  const code = c.explanationLanguages?.[0];
+  let name = code ?? '';
+  try { if (code) name = new Intl.DisplayNames([c.uiLanguage], { type: 'language' }).of(code) ?? code; } catch { /* keep code */ }
+  return [
+    ['Give me a hint', 'a nudge towards the answer — never the answer itself before your first try'],
+    ...(code ? [[`Explain in ${name}`, `a short explanation of the selected part in ${name}, then back to ${c.targetLanguage.name}`] as [string, string]] : []),
+    ['Show more examples', 'more natural examples of the same phrase or pattern'],
+    ['Why is this wrong?', 'the rule behind the feedback on your last answer'],
+    ['Practise this again', 'a fresh mini-task on the same point'],
+  ];
+}
 
 interface Ctx { lessonTitle: string; stepTitle: string }
 let ctx: Ctx | null = null;
@@ -8,13 +24,6 @@ let reply = '';
 let panel: HTMLElement;
 let fab: HTMLButtonElement;
 
-const ACTIONS: [string, string][] = [
-  ['Give me a hint', 'a nudge towards the answer — never the answer itself before your first try'],
-  ['Explain in Russian', 'a short explanation of the selected part in Russian, then back to English'],
-  ['Show more examples', 'more natural examples of the same phrase or pattern'],
-  ['Why is this wrong?', 'the rule behind the feedback on your last answer'],
-  ['Practise this again', 'a fresh mini-task on the same point'],
-];
 
 function draw() {
   panel.innerHTML = `
@@ -26,7 +35,7 @@ function draw() {
     ${task ? `<div class="tutor__sel"><span class="eyebrow">Task ${task.number}</span><span>${esc(task.prompt.length > 140 ? task.prompt.slice(0, 140) + '…' : task.prompt)}</span></div>` : ''}
     ${selection ? `<div class="tutor__sel"><span class="eyebrow">Selected</span><span>“${esc(selection)}”</span></div>` : ctx ? '<p class="tutor__tip">Tip: highlight a word or sentence in the lesson.</p>' : ''}
     ${reply ? `<div class="tutor__reply" role="status">${reply}</div>` : ''}
-    <div class="tutor__actions">${ACTIONS.map(([a], i) => `<button class="tutor__chip" type="button" data-act="${i}">${a}</button>`).join('')}</div>
+    <div class="tutor__actions">${actions().map(([a], i) => `<button class="tutor__chip" type="button" data-act="${i}">${a}</button>`).join('')}</div>
     <p class="tutor__foot">Hints never reveal the answer before your first try. AI feedback supports learning; it is not an official C1 assessment.</p>`;
 }
 
@@ -43,7 +52,7 @@ export function initTutor() {
     if (t.closest('[data-tutor-close]')) close();
     const act = t.closest<HTMLElement>('[data-act]');
     if (act) {
-      const [name, what] = ACTIONS[Number(act.dataset.act)];
+      const [name, what] = actions()[Number(act.dataset.act)];
       reply = `<strong>${esc(name)}</strong><br>MIYU Tutor is still being connected. When it’s live, this button will give you ${esc(what)}${selection ? ' — about the part you selected' : ''}.`;
       draw();
       panel.querySelector<HTMLElement>(`[data-act="${act.dataset.act}"]`)?.focus();

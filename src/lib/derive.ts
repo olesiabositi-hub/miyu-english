@@ -1,7 +1,6 @@
-import { lessonList, getLesson, progressKey } from './catalog';
+import { lessonList, getLesson, progressKey, modules, totalLessons } from './course';
 import { buildSteps, type Step } from './lesson-model';
 import { isFinished } from './scoring';
-import { modules, TOTAL_LESSONS } from './curriculum';
 import type { PublicLesson, PublicTask, SectionType } from './contract';
 import type { State, LessonProgress } from './progress';
 
@@ -33,14 +32,14 @@ export function resumePoint(lesson: PublicLesson, lp?: LessonProgress): ResumePo
 export const lessonAllTasksDone = (lesson: PublicLesson, lp?: LessonProgress) => lesson.tasks.every((t) => taskFinished(lp, t));
 
 export function courseProgress(s: State) {
-  const done = lessonList.filter((l) => s.lessons[progressKey(l)]?.completedAt).length;
-  return { done, total: TOTAL_LESSONS, percent: Math.round((done / TOTAL_LESSONS) * 100) };
+  const done = lessonList().filter((l) => s.lessons[progressKey(l)]?.completedAt).length;
+  return { done, total: totalLessons(), percent: Math.round((done / totalLessons()) * 100) };
 }
 
 export function nextLesson(s: State): PublicLesson | undefined {
   const cur = s.currentLesson ? getLesson(s.currentLesson) : undefined;
   if (cur && !s.lessons[progressKey(cur)]?.completedAt) return cur;
-  return lessonList.find((l) => !s.lessons[progressKey(l)]?.completedAt);
+  return lessonList().find((l) => !s.lessons[progressKey(l)]?.completedAt);
 }
 
 export type SkillKey = 'Reading' | 'Listening' | 'Language' | 'Writing' | 'Speaking';
@@ -60,7 +59,7 @@ export function skillEvidence(s: State) {
     Reading: { checked: 0, firstTry: 0, submitted: 0 }, Listening: { checked: 0, firstTry: 0, submitted: 0 }, Language: { checked: 0, firstTry: 0, submitted: 0 },
     Writing: { checked: 0, firstTry: 0, submitted: 0 }, Speaking: { checked: 0, firstTry: 0, submitted: 0 },
   };
-  for (const lesson of lessonList) {
+  for (const lesson of lessonList()) {
     const lp = s.lessons[progressKey(lesson)];
     if (!lp) continue;
     for (const t of lesson.tasks) {
@@ -91,8 +90,8 @@ export function currentFocus(s: State): string | null {
 
 export function moduleStatus(s: State) {
   const cur = nextLesson(s);
-  return modules.map((m) => {
-    const published = lessonList.filter((l) => l.moduleId === m.id);
+  return modules().map((m) => {
+    const published = lessonList().filter((l) => l.moduleId === m.id);
     const done = published.length > 0 && m.lessons.length > 0 && m.lessons.every((ref) => { const l = published.find((p) => p.id === ref.id); return l && s.lessons[progressKey(l)]?.completedAt; });
     const current = !!cur && cur.moduleId === m.id;
     return { module: m, published, status: done ? 'done' : current ? 'current' : published.length ? 'open' : 'soon' } as const;

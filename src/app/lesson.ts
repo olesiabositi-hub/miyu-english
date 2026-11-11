@@ -3,11 +3,10 @@
  * Layout: lesson bar · step rail · reading column · MIYU Tutor drawer.
  * See docs/lesson-renderer.md for the architecture.
  */
-import { getLesson, progressKey, routeId } from '../lib/catalog';
+import { getLesson, progressKey, routeId, totalLessons, moduleOf, cfg, rules, courseHref } from '../lib/course';
 import { buildSteps, SECTION_LABEL } from '../lib/lesson-model';
 import { load, update, lessonProgress, visitStep, addReviewItems, canPersist } from '../lib/progress';
 import { resumePoint, stepDone, taskFinished, lessonAllTasksDone } from '../lib/derive';
-import { TOTAL_LESSONS, moduleOf } from '../lib/curriculum';
 import type { PublicLesson, PublicTask } from '../lib/contract';
 import { esc, icon, feedback } from './ui';
 import { mountSection, type SectionCtl } from './lesson/sections';
@@ -22,6 +21,7 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
     return () => {};
   }
   const lesson: PublicLesson = found;
+  const course = cfg();
   const key = progressKey(lesson);
   const rid = routeId(lesson);
   const steps = buildSteps(lesson);
@@ -41,7 +41,7 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
       <div class="lesson-bar">
         <a class="lesson-bar__back" href="#/lessons">${icon.back}<span>Back to Course</span></a>
         <span class="lesson-bar__sep" aria-hidden="true"></span>
-        <span class="eyebrow lesson-bar__num">${lesson.demo ? 'Interface demo' : `Lesson ${lesson.sequence} / ${TOTAL_LESSONS}`}</span>
+        <span class="eyebrow lesson-bar__num">${lesson.demo ? 'Interface demo' : `Lesson ${lesson.sequence} / ${totalLessons()}`}</span>
         <span class="display lesson-bar__title">${esc(lesson.title)}</span>
         <span class="lesson-bar__saved" data-saved>${canPersist() ? icon.check + 'Saved' : 'Not saved in this browser'}</span>
       </div>
@@ -90,7 +90,7 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
     const lp = load().lessons[key];
     const open = lesson.tasks.filter((t) => !taskFinished(lp, t));
     col.innerHTML = `${banner}${head(stepEyebrow, 'Wrap-up')}
-      <section class="block"><h2 class="display block__h">Your ${lesson.lexicalChunks.length} chunks</h2><ul class="chunks">${lesson.lexicalChunks.map((c) => `<li>${esc(c)}</li>`).join('')}</ul><p class="muted-sm">They go to your Review Lab when you finish the lesson.</p></section>
+      <section class="block"><h2 class="display block__h">Your ${lesson.lexicalChunks.length} chunks</h2><ul class="chunks" lang="${esc(course.targetLanguage.code)}">${lesson.lexicalChunks.map((c) => `<li>${esc(c)}</li>`).join('')}</ul><p class="muted-sm">They go to your Review Lab when you finish the lesson.</p></section>
       ${lesson.review.retrievalPrompts.length ? `<section class="block"><h2 class="display block__h">Quick recall</h2><ol class="recall">${lesson.review.retrievalPrompts.map((p) => `<li>${richInline(p)}</li>`).join('')}</ol><p class="muted-sm">Answer out loud or in your head — no need to type.</p></section>` : ''}
       ${lesson.review.delayedTransfer ? `<section class="transfer on-dark"><span class="eyebrow">In the next few days</span><p class="display">${richInline(lesson.review.delayedTransfer)}</p></section>` : ''}
       <div data-finish-area>${open.length ? feedback('info', `To finish the lesson, complete ${open.map((t) => { const si = steps.findIndex((s) => s.tasks.includes(t)); return `<a href="#/lesson/${rid}/${si + 1}">Task ${taskNo(t)}</a>`; }).join(', ')}.`) : ''}</div>`;
@@ -102,12 +102,14 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
       const lp = load().lessons[key];
       sectionCtls.set(step.section.id, mountSection(col.querySelector<HTMLElement>('[data-section]')!, step.section, {
         transcriptUnlocked: step.tasks.some((t) => (lp?.answers[t.id]?.attempts ?? 0) > 0),
+        lang: course.targetLanguage.code, dir: course.targetLanguage.dir,
       }));
     }
     for (const t of step.tasks) {
       const host = col.querySelector<HTMLElement>(`[data-task="${CSS.escape(t.id)}"]`)!;
       taskCtls.set(t.id, mountTask(host, t, {
         lesson, key,
+        rules: rules(), lang: course.targetLanguage.code, languageName: course.targetLanguage.name, dir: course.targetLanguage.dir, specialCharacters: course.input?.specialCharacters,
         onSubmitted: (task) => {
           if (task.sectionId) sectionCtls.get(task.sectionId)?.unlockTranscript();
           for (const other of step.tasks) if (other.dependencies.includes(task.id)) taskCtls.get(other.id)?.redraw();
@@ -127,7 +129,7 @@ export function renderLesson(el: HTMLElement, id: string, stepParam?: string): (
     for (const sid of sectionIds) {
       const ctl = sectionCtls.get(sid);
       if (ctl) ctl.showEvidence(ids);
-      else { const si = steps.findIndex((s) => s.id === sid); if (si >= 0) location.hash = `#/lesson/${rid}/${si + 1}`; }
+      else { const si = steps.findIndex((s) => s.id === sid); if (si >= 0) location.hash = courseHref(`/lesson/${rid}/${si + 1}`); }
     }
   }
 

@@ -11,7 +11,8 @@ export interface SectionCtl {
   destroy(): void;
 }
 
-export function mountSection(host: HTMLElement, s: PublicSection, opts: { transcriptUnlocked: boolean; showHeading?: boolean }): SectionCtl {
+export function mountSection(host: HTMLElement, s: PublicSection, opts: { transcriptUnlocked: boolean; showHeading?: boolean; lang: string; dir: 'ltr' | 'rtl' }): SectionCtl {
+  const L = `lang="${esc(opts.lang)}" dir="${opts.dir}"`;
   const isListening = s.type === 'listening' || !!s.audio?.length;
   const hasAudio = !!s.audio?.length;
   let transcriptOpen = false;
@@ -34,7 +35,7 @@ export function mountSection(host: HTMLElement, s: PublicSection, opts: { transc
     if (!s.transcript) return '';
     const btn = `<button class="chip" type="button" data-transcript aria-expanded="${transcriptOpen}" ${transcriptUnlocked ? '' : 'disabled'}>${transcriptOpen ? 'Hide transcript' : 'Show transcript'}</button>`;
     return `<div class="transcript-wrap">${btn}${transcriptUnlocked ? '' : '<span class="muted-sm">Available after your first listen or first answer.</span>'}
-      ${transcriptOpen ? `<div class="transcript reading" data-selectable data-transcript-body>${richText(s.transcript)}</div>` : ''}</div>`;
+      ${transcriptOpen ? `<div class="transcript reading" ${L} data-selectable data-transcript-body>${richText(s.transcript)}</div>` : ''}</div>`;
   };
 
   function draw() {
@@ -42,7 +43,7 @@ export function mountSection(host: HTMLElement, s: PublicSection, opts: { transc
       ${opts.showHeading ? `<div class="section-head"><span class="eyebrow">${SECTION_LABEL[s.type]}</span><h2 class="display block__h">${esc(s.title)}</h2></div>` : ''}
       ${s.images?.map((src) => `<figure class="section-figure"><img src="${esc(src)}" alt="" loading="lazy"></figure>`).join('') ?? ''}
       ${s.missingAssets && !isListening ? feedback('info', 'Some media for this part is still being prepared.') : ''}
-      ${s.content.trim() ? `<div class="reading" data-selectable data-content>${richText(s.content)}</div>` : ''}
+      ${s.content.trim() ? `<div class="reading" ${L} data-selectable data-content>${richText(s.content)}</div>` : ''}
       ${audioHtml()}
       ${transcriptHtml()}`;
     applyHighlights();

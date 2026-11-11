@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * MIYU English — lesson validation (schema + cross-field checks the JSON Schema cannot express).
- * Usage: node scripts/validate-lessons.mjs [files...]   (default: content/lessons/D*.json + tests/fixtures/*.json)
+ * MIYU Language Academy — content validation (schema + cross-field checks the JSON Schema cannot express).
+ * Usage: node scripts/validate-lessons.mjs [courseId ...]   (default: every course in content/site.json)
+ * For each course: course.json against schemas/course.schema.json, then every lesson in
+ * course.contract.lessonsDir (+ tests/fixtures/<courseId>/*.json) against the course's lesson schema.
  * Exit code 1 on any error. Warnings never fail the build.
  * Pedagogical quality is NOT checked here — that is editorial review (see INTEGRATION_CONTRACT.md).
  */
@@ -10,15 +12,27 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, basename } from 'node:path';
 
 const root = new URL('..', import.meta.url).pathname;
-const schema = JSON.parse(readFileSync(join(root, 'schemas/lesson.schema.json'), 'utf8'));
-const validate = new Ajv2020({ allErrors: true, strict: false }).compile(schema);
+const readJson = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
+const ajv = new Ajv2020({ allErrors: true, strict: false });
+const validateCourse = ajv.compile(readJson('schemas/course.schema.json'));
 const BLANK = /_{3,}/g;
 const CHOICE = new Set(['single_choice', 'multiple_choice', 'ordering', 'matching']);
-
 const list = (d) => (existsSync(join(root, d)) ? readdirSync(join(root, d)).filter((f) => f.endsWith('.json')).map((f) => join(root, d, f)) : []);
-const files = process.argv.slice(2).length ? process.argv.slice(2) : [...list('content/lessons'), ...list('tests/fixtures')];
 
-let errors = 0, warnings = 0;
+const site = readJson('content/site.json');
+const courseIds = process.argv.slice(2).length ? process.argv.slice(2) : site.courses;
+let errors = 0, warnings = 0, fileCount = 0;
+if (!site.courses.includes(site.defaultCourse)) { console.error(`✗ site.json: defaultCourse ${site.defaultCourse} is not in courses`); errors++; }
+for (const courseId of courseIds) {
+  const course = readJson(`content/courses/${courseId}/course.json`);
+  console.log(`\n■ course ${courseId}`);
+  if (!validateCourse(course)) { validateCourse.errors.forEach((e) => console.error(`  ✗ course.json ${e.instancePath || '/'} ${e.message}`)); errors += validateCourse.errors.length; continue; }
+  if (course.id !== courseId) { console.error(`  ✗ course.json id ${course.id} must equal folder name ${courseId}`); errors++; }
+  const validate = ajv.compile(readJson(course.contract.schema));
+  const idPattern = new RegExp(course.contract.lessonIdPattern);
+  const moduleIds = new Set(course.modules.map((m) => m.id));
+  const files = [...list(course.contract.lessonsDir), ...list(`tests/fixtures/${courseId}`)];
+  fileCount += files.length;
 for (const file of files) {
   const name = basename(file);
   const E = (m) => { errors++; console.error(`  ✗ ${m}`); };
@@ -28,7 +42,15 @@ for (const file of files) {
   console.log(`${name}`);
   if (!validate(L)) { validate.errors.forEach((e) => E(`schema ${e.instancePath || '/'} ${e.message}`)); continue; }
 
-  const inContent = file.includes('content/lessons');
+  const inContent = file.includes(course.contract.lessonsDir);
+  if (!idPattern.test(L.id)) E(`id ${L.id} does not match course lessonIdPattern ${course.contract.lessonIdPattern}`);
+  if (L.sequence > course.totalLessons) E(`sequence ${L.sequence} exceeds course totalLessons ${course.totalLessons}`);
+  if (!moduleIds.has(L.moduleId)) E(`moduleId ${L.moduleId} is not a module of course ${courseId}`);
+  if (L.language !== course.targetLanguage.code) E(`language ${L.language} ≠ course targetLanguage ${course.targetLanguage.code}`);
+  if (!course.levels.scale.includes(L.level)) W(`level ${L.level} is outside the course scale ${course.levels.scale.join(', ')}`);
+  const cs = course.input?.specialCharacters ?? [];
+  const nonAscii = new Set((JSON.stringify(L.tasks.map((t) => t.scoring.acceptedAnswers ?? [])).match(/[^\x00-\x7F’‘“”–—…·]/gu) ?? []));
+  for (const ch of nonAscii) if (!cs.includes(ch) && !cs.includes(ch.toLocaleUpperCase(course.targetLanguage.code))) W(`accepted answers use “${ch}” — consider adding it to course.json input.specialCharacters`);
   if (inContent && name !== `${L.id}.json`) E(`file name must be ${L.id}.json`);
   if (`D${String(L.sequence).padStart(3, '0')}` !== L.id) W(`sequence ${L.sequence} does not match id ${L.id}`);
 
@@ -98,5 +120,6 @@ for (const file of files) {
   if ((L.status === 'approved' || L.status === 'published') && !publishable) E(`status ${L.status} but QA flags are not all true — will not be published`);
   console.log(`  ${publishable ? '✓ publishable' : `· not published (status ${L.status})`} · ${L.sections.length} sections · ${L.tasks.length} tasks`);
 }
-console.log(`\n${files.length} file(s), ${errors} error(s), ${warnings} warning(s)`);
+}
+console.log(`\n${courseIds.length} course(s), ${fileCount} lesson file(s), ${errors} error(s), ${warnings} warning(s)`);
 process.exit(errors ? 1 : 0);
