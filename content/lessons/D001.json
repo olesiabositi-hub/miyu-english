@@ -1,0 +1,540 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "D001",
+  "moduleId": "M01",
+  "sequence": 1,
+  "title": "Beyond the Basics",
+  "level": "C1",
+  "status": "draft",
+  "language": "en",
+  "durationMinutes": 90,
+  "cefrScale": "Spoken production",
+  "outcomes": [
+    "Record a two-minute personal and a 90-second professional introduction with connected discourse, relevant supporting detail and appropriate register.",
+    "Use accurate time reference, discourse links and Day 001 lexical chunks in context.",
+    "Infer stance from a written stimulus, support interpretations with evidence, and identify a qualified decision and correction in recorded speech when available.",
+    "Answer an unexpected follow-up, paraphrase a key idea and use intelligible thought groups."
+  ],
+  "lexicalChunks": [
+    "what drives me",
+    "a turning point",
+    "in the long run",
+    "it comes down to",
+    "to a certain extent",
+    "looking back",
+    "what I value most",
+    "the way I see it"
+  ],
+  "grammar": [
+    "Tense control for current identity, completed experience and ongoing involvement",
+    "Discourse coherence through sequencing and concession",
+    "Audience-sensitive register"
+  ],
+  "sections": [
+    {
+      "id": "orientation",
+      "type": "intro",
+      "title": "Introduce yourself for a purpose",
+      "content": "Think of one detail you would share with a new neighbour and one you would share at a networking event. Read the main passage and compare the models. Notice how each speaker selects a role, a motivation and an example. After language practice, rehearse and record your own introductions. Day 001 feedback is formative."
+    },
+    {
+      "id": "reading-main",
+      "type": "reading",
+      "title": "Two ways to introduce yourself",
+      "content": "When Maya joined a community project, the organisers asked everyone to introduce themselves in sixty seconds. She had spent the previous evening polishing a miniature biography: her degree, her job title, the organisations she had worked for and three achievements. She delivered every sentence without hesitation. Afterwards, someone asked what had made her volunteer. Maya realised that her achievements told the group very little about why she was there. “What drives me is seeing a space become useful again,” she added.\n\nAcross the table, Daniel took a different approach. He started with a turning point: the day a neighbour had invited him to help repair a neglected garden. Looking back, he explained, that afternoon had changed how he thought about public spaces. He mentioned his work only briefly, then described why community projects mattered to him. People asked follow-up questions. His introduction was memorable, although a newcomer who needed to know his professional skills might have left with an incomplete picture.\n\nThe organisers later invited both volunteers to speak to potential sponsors. Maya argued that credibility should come first. Sponsors, she said, needed to understand what the team could deliver, not merely what its members cared about. In the long run, enthusiasm would mean little without evidence of competence. Daniel agreed about evidence but worried that a list of qualifications would make the project sound like a corporate presentation. To a certain extent, they were both right: the audience needed reassurance and a reason to feel connected.\n\nThey decided to test two openings. Maya began with a concise account of the team's experience, then added a story about why the project mattered locally. Daniel reversed the order: a moment from the garden first, followed by concrete results, including how many volunteers had returned and what work had been completed. Both versions prompted useful questions, but not the same ones. Maya was asked about budgets and delivery dates; Daniel was asked about the people who would benefit.\n\nAfterwards, they compared their impressions. Maya noticed that she had been treating personal motivation as if it were unprofessional. Daniel admitted that his storytelling sometimes left listeners guessing about his role. “What I value most is making people care enough to act,” he said. Maya replied that, for her, it comes down to building trust without overselling a promise. Neither abandoned their preferred style. Instead, they agreed that a strong introduction should be shaped by its purpose: who is listening, what they already know and what they need next.\n\nThe lesson was not that personal stories always outperform credentials, or vice versa. A polished biography can establish expertise quickly; a story can reveal values and invite conversation. The way I see it, the most persuasive introduction makes room for both, while leaving out details that matter more to the speaker than to the audience. Even then, those few conversations could tell the organisers only what this audience wanted to ask about. A different group might have responded quite differently.",
+      "evidenceSpans": [
+        {
+          "id": "READ-A",
+          "text": "Maya realised that her achievements told the group very little about why she was there."
+        },
+        {
+          "id": "READ-B",
+          "text": "Maya was asked about budgets and delivery dates; Daniel was asked about the people who would benefit."
+        },
+        {
+          "id": "READ-C",
+          "text": "Even then, those few conversations could tell the organisers only what this audience wanted to ask about. A different group might have responded quite differently."
+        },
+        {
+          "id": "READ-D",
+          "text": "His introduction was memorable, although a newcomer who needed to know his professional skills might have left with an incomplete picture."
+        }
+      ]
+    },
+    {
+      "id": "reading-models",
+      "type": "reading",
+      "title": "Two introductions by Lina",
+      "content": "Read both introductions. Underline the first detail Lina gives in each. Infer which strength carries across both settings. Cite one detail from each model and explain why each detail works for its audience. Then infer why Daniel’s approach in the main reading might be less effective with a potential sponsor. Cite the sentence that supports your answer.\n\nPersonal introduction at a repair café\n\nHi, I’m Lina. I live around the corner, and if you’ve ever seen someone walking home with a lamp sticking out of a shopping bag, that was probably me. My kitchen table has become a bit of a workshop. My friends now ask whether there’ll be room for dinner before they come over.\n\nI got into fixing things because of a radio my dad had kept since he was a teenager. It stopped working one winter, and I took it to a repair café, expecting to leave it with someone. Instead, a volunteer pulled up a chair and showed me how to check for a loose wire. That was a turning point for me. Looking back, I think what stayed with me was how easy she made it to ask a question. By the time the radio worked again, I’d spent most of the afternoon there and completely forgotten about lunch.\n\nI’ve been coming to repair sessions ever since. I’m quite good at talking people through the first step, which comes in handy when someone’s worried about making things worse. What drives me is seeing someone go from “I’ll leave you to it” to “Can I try that?” The way I see it, it comes down to giving people enough time to figure things out for themselves.\n\nI’m still hopeless at sewing, though. If anyone here knows how to replace a zip without getting it stuck halfway up, I’d love to learn.\n\nProfessional introduction at a networking event\n\nHello, I’m Lina. I coordinate volunteer training at a neighbourhood repair café. My role is to help new volunteers lead sessions where visitors can take an active part in repairing something they’ve brought in.\n\nLast year, I noticed that experienced volunteers often took over when a visitor hesitated. I worked with two of them to redesign our induction. We introduced a short practice exercise in which each volunteer had to explain a safety check, demonstrate it once, and then guide a partner through it. At the next three sessions, I observed that more visitors were able to explain the first step before attempting it. That said, three sessions gave us only an early indication of how well the approach was working.\n\nWhat drives me is making technical skills accessible to people who are trying them for the first time. What I value most in a training programme is whether volunteers can adapt what they’ve learned to the person in front of them. In the long run, I’d like to see whether the same approach works in larger programmes. I’d be interested to hear how your team prepares volunteers to work with first-time participants."
+    },
+    {
+      "id": "listening-main",
+      "type": "listening",
+      "title": "A welcome at the repair café",
+      "content": "Audio pending. When the recording is available, listen once for the decision and again for the concern and clarification. Use the script for preview or accessibility. A script preview does not provide listening assessment evidence.",
+      "assetRefs": [],
+      "transcript": "Lina [A, warm; speaking as she would to a newcomer]: Hi, I’m Lina. I live just around the corner. My kitchen table is usually covered in things I’m trying to fix. It started with my dad’s old radio. I took it to a repair café, and the volunteer pulled up a chair so I could work alongside her. I’ve been coming back ever since. If you’ve brought something that’s been sitting in a drawer for years, I’d love to hear the story behind it.\n\nLina [A, back to conversation]: That’s the kind of welcome I’d like every volunteer to give at Saturday’s open session. Last month, two visitors said they couldn’t tell who was there to help. If we all give a quick introduction at the door, they’ll know who to approach. And hearing why somebody volunteers can make it easier to ask them a question.\n\nSam [B, curious rise]: Every volunteer? How long were you thinking?\n\nLina: About a minute each. Enough to say what brought us here and what we can help with. The way I see it, it would make the room feel a little less intimidating.\n\nSam [B, measured; stress queue]: I like the idea of being approachable. My worry is that if every volunteer gives a one-minute introduction at the door, a queue will build up before visitors can check in. We get a rush as soon as we open, and there’s nowhere for the line to go except back out into the rain.\n\nLina: We could move the welcome over to the workbenches, and then—\n\nSam [B, brief natural interruption]: Then who checks people in?\n\nLina [A, pause; CLARIFY_01; stress one and inside]: Ah, I made it sound as though everyone would have to stop at the door. What I’m proposing now is one volunteer giving a brief welcome inside, after visitors have checked in. The other volunteers can carry on helping people.\n\nSam: That would deal with the queue at the door. I’d still want the welcome to tell people where to go. If it’s mostly a personal story, someone with a broken kettle may still have no idea which table to try.\n\nLina: Fair point. I could say why I started coming, then finish with where to put items that need checking. I’d keep the bit about the radio short. What I value most is that people feel comfortable asking for help. They can always ask about the story later.\n\nSam: How would we tell if it worked? If someone goes straight to the right table, we won’t know whether it was the welcome or the signs.\n\nLina: We could ask two or three people what helped them find the right table. That would give us something to discuss when we close.\n\nSam [B, final exchange; qualified agreement, falling intonation]: All right. Let’s try one brief welcome inside after check-in on Saturday. If it causes a delay, we’ll drop it for the rest of the session.\n\nLina [A, falling intonation]: Agreed. I’ll do the first welcome, and we can decide afterwards whether to try it again.",
+      "evidenceSpans": [
+        {
+          "id": "LIST-OUTCOME",
+          "text": "Let’s try one brief welcome inside after check-in on Saturday. If it causes a delay, we’ll drop it for the rest of the session."
+        },
+        {
+          "id": "LIST-RISK",
+          "text": "My worry is that if every volunteer gives a one-minute introduction at the door, a queue will build up before visitors can check in."
+        },
+        {
+          "id": "CLARIFY_01",
+          "text": "Ah, I made it sound as though everyone would have to stop at the door. What I’m proposing now is one volunteer giving a brief welcome inside, after visitors have checked in."
+        }
+      ]
+    },
+    {
+      "id": "grammar",
+      "type": "grammar",
+      "title": "Connect a claim to a qualification",
+      "content": "Use the present for your current role, the past for a finished event, and the present perfect for experience that continues into the present. Read this example: “The change helped during the trial. That said, there is another factor to consider.” Notice how the second sentence asks the listener to reconsider the scope of the first claim. Try the identification and rewriting tasks before reviewing the explanation."
+    },
+    {
+      "id": "vocabulary",
+      "type": "vocabulary",
+      "title": "Describe what motivates you",
+      "content": "Find all eight target chunks in the main passage. Group them by what they do: introduce motivation or values, mark a change or look back, or express a perspective or qualify a claim. Some can work in more than one group. Explain one grouping to a partner before trying the matching and cloze tasks."
+    },
+    {
+      "id": "writing",
+      "type": "writing",
+      "title": "One motivation for two audiences",
+      "content": "Choose a motivation you can explain with a concrete detail. Think of how you would express it to someone at a local event and how you would express it to a professional contact. Keep the reason consistent and adjust the framing and detail."
+    },
+    {
+      "id": "pronunciation",
+      "type": "pronunciation",
+      "title": "Pause at meaning boundaries",
+      "content": "Say this line aloud: “Looking back / I think what stayed with me / was how easy she made it to ask a question.” The slashes suggest brief boundaries. Record one version, listen for a place where a pause would help, and record it again. Check whether each group carries a clear idea. Ask a listener where the phrasing helped them follow the message. Use a recording for pronunciation feedback."
+    },
+    {
+      "id": "speaking",
+      "type": "speaking",
+      "title": "Rehearse and record two introductions",
+      "content": "Rehearse a personal introduction for a community group and a professional introduction for a networking contact. Use a current role or interest, one finished experience, and a motivation or future goal. Make the detail relevant to each listener. Use your own wording. For the separate spontaneous response, wait until the facilitator gives the follow-up question."
+    },
+    {
+      "id": "same-day-review",
+      "type": "review",
+      "title": "Retrieve and transfer",
+      "content": "After practising the chunks today, put away the lesson text and use four of them in fresh situations. Later lessons will ask you to retrieve and use them again."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "D001-T01",
+      "type": "reading_mc",
+      "sectionId": "reading-main",
+      "prompt": "Select the author’s main purpose. Then cite one short phrase that shows why the author qualifies the conclusion.",
+      "responseType": "single_choice",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 1,
+        "rubric": "Award 1 only for B with a relevant phrase about adapting to the audience or the limits of the evidence. A choice alone earns 0.",
+        "correctOptionIds": [
+          "B"
+        ],
+        "evidenceSpanIds": [
+          "READ-A",
+          "READ-C"
+        ]
+      },
+      "dependencies": [
+        "reading-main"
+      ],
+      "feedback": "The comparison explains why audiences respond differently. The closing caveat limits how far the examples can be generalised.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "To persuade community groups to buy training in public speaking."
+        },
+        {
+          "id": "B",
+          "text": "To analyse how introductions work for different listeners while acknowledging the limits of the examples."
+        },
+        {
+          "id": "C",
+          "text": "To dismiss both credentials and personal stories as ways to introduce yourself."
+        }
+      ]
+    },
+    {
+      "id": "D001-T02",
+      "type": "reading_evidence",
+      "sectionId": "reading-main",
+      "prompt": "Copy one short phrase showing how the sponsors responded to the two openings and one short phrase that qualifies what the organisers could conclude. Label them Example and Qualification.",
+      "responseType": "short_text",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 2,
+        "rubric": "Award 1 per correctly labelled excerpt. Accept shorter verbatim spans that preserve the contrast or limitation, respectively.",
+        "acceptedAnswers": [
+          "Example: Maya was asked about budgets and delivery dates; Daniel was asked about the people who would benefit.",
+          "Qualification: A different group might have responded quite differently."
+        ],
+        "evidenceSpanIds": [
+          "READ-B",
+          "READ-C"
+        ]
+      },
+      "dependencies": [
+        "reading-main"
+      ],
+      "feedback": "The questions about budgets and beneficiaries are an observed example. The small number of conversations limits the conclusion.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ]
+    },
+    {
+      "id": "D001-T03",
+      "type": "reading_inference",
+      "sectionId": "reading-main",
+      "prompt": "What attitude does the writer imply about combining credentials with a personal story? Select one answer and cite a short phrase supporting your interpretation.",
+      "responseType": "single_choice",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 1,
+        "rubric": "Award 1 for A with a relevant qualification from READ-C. An unsupported selection earns 0.",
+        "correctOptionIds": [
+          "A"
+        ],
+        "evidenceSpanIds": [
+          "READ-C"
+        ]
+      },
+      "dependencies": [
+        "reading-main"
+      ],
+      "feedback": "The writer sees value in combining both, while leaving open how a different audience would react.",
+      "tutorRules": [
+        "After submission, ask what Daniel’s brief mention of work might imply for a sponsor. Accept that the sponsor may be unsure of his skills or role, supported by READ-D. For the Lina comparison, accept patience shown through the radio anecdote and training exercise, with one relevant detail from each model."
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "Cautiously positive."
+        },
+        {
+          "id": "B",
+          "text": "Wholly dismissive."
+        },
+        {
+          "id": "C",
+          "text": "Neutral, with no position."
+        }
+      ]
+    },
+    {
+      "id": "D001-T04",
+      "type": "listening_gist",
+      "sectionId": "listening-main",
+      "prompt": "After listening, choose the outcome that best describes the speakers’ agreement.",
+      "responseType": "single_choice",
+      "scoring": {
+        "mode": "auto",
+        "maxPoints": 1,
+        "rubric": "Award 1 for B once the final recording has a verified evidence span in its last 30 seconds. Keep assessment unavailable while audio and timecodes are pending.",
+        "correctOptionIds": [
+          "B"
+        ],
+        "evidenceSpanIds": [
+          "LIST-OUTCOME"
+        ]
+      },
+      "dependencies": [
+        "listening-main"
+      ],
+      "feedback": "They agree on a trial with a condition about delays. This feedback is for use after listening and submitting.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "They agree to make every volunteer give a welcome at each session."
+        },
+        {
+          "id": "B",
+          "text": "They agree to try one brief welcome after check-in and stop if it delays the session."
+        },
+        {
+          "id": "C",
+          "text": "They end the conversation without considering a next step."
+        }
+      ]
+    },
+    {
+      "id": "D001-T05",
+      "type": "listening_detail",
+      "sectionId": "listening-main",
+      "prompt": "Which speaker raises a practical concern about the original plan, and what is the concern?",
+      "responseType": "short_text",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 2,
+        "rubric": "Once audio evidence is verified, award 1 for Sam or Speaker B and 1 for identifying a queue or check-in delay caused by the individual welcomes at the door.",
+        "acceptedAnswers": [
+          "Sam (Speaker B). One-minute introductions by every volunteer at the door could create a queue before visitors check in."
+        ],
+        "evidenceSpanIds": [
+          "LIST-RISK"
+        ]
+      },
+      "dependencies": [
+        "listening-main"
+      ],
+      "feedback": "Sam connects the welcomes with a queue before check-in. Include both the speaker and the risk.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ]
+    },
+    {
+      "id": "D001-T06",
+      "type": "listening_repair",
+      "sectionId": "listening-main",
+      "prompt": "Locate the clarification in the recording. In one sentence, explain what Lina originally made it sound like and what she proposes instead.",
+      "responseType": "short_text",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 2,
+        "rubric": "Once audio evidence is verified, award 1 for everyone stopping at the door for the welcomes and 1 for one volunteer giving a brief welcome inside after check-in. Use CLARIFY_01 to verify the answer.",
+        "acceptedAnswers": [
+          "Instead of everyone stopping at the door, one volunteer will give a brief welcome inside after visitors have checked in."
+        ],
+        "evidenceSpanIds": [
+          "CLARIFY_01"
+        ]
+      },
+      "dependencies": [
+        "listening-main"
+      ],
+      "feedback": "Use a before-and-after structure to show exactly what changes.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ]
+    },
+    {
+      "id": "D001-T07",
+      "type": "grammar_identification",
+      "sectionId": "grammar",
+      "prompt": "In “That said, there is another factor to consider.” identify the linking expression and explain what it does to the previous claim.",
+      "responseType": "short_text",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 2,
+        "rubric": "Award 1 for identifying 'That said' as a contrastive or concessive discourse marker and 1 for explaining how it acknowledges the preceding point while introducing a qualification or counterpoint.",
+        "acceptedAnswers": [
+          "'That said' is a concessive discourse marker. It acknowledges the preceding point and introduces a factor that may qualify it."
+        ]
+      },
+      "dependencies": [
+        "grammar"
+      ],
+      "feedback": "Identify the expression first, then explain how it changes the relationship between the two ideas.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ]
+    },
+    {
+      "id": "D001-T08",
+      "type": "grammar_transformation",
+      "sectionId": "grammar",
+      "prompt": "Rewrite “That said, there is another factor to consider.” in a less formal or more explicit way. Keep the original meaning.",
+      "responseType": "short_text",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 3,
+        "rubric": "Award 1 for preserving meaning, time reference, actor and stance, 1 for an appropriate contrastive or concessive link, and 1 for natural wording. Equivalent rewrites are acceptable.",
+        "acceptedAnswers": [
+          "Still, there’s another factor to consider.",
+          "Even so, there’s another factor to consider."
+        ]
+      },
+      "dependencies": [
+        "grammar",
+        "D001-T07"
+      ],
+      "feedback": "Your rewrite should still acknowledge the earlier point and signal an additional consideration.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ]
+    },
+    {
+      "id": "D001-T09",
+      "type": "chunk_match",
+      "sectionId": "vocabulary",
+      "prompt": "Match 1 ‘what drives me’, 2 ‘a turning point’ and 3 ‘in the long run’ to cards A–D. Use one card for each chunk. One card is unused.",
+      "responseType": "matching",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 3,
+        "rubric": "Award 1 for each correct pair: 1–C, 2–A, 3–D. B is unused. Use the pair mapping to score.",
+        "acceptedAnswers": [
+          "1-C",
+          "2-A",
+          "3-D"
+        ]
+      },
+      "dependencies": [
+        "vocabulary"
+      ],
+      "feedback": "Distinguish a source of motivation, a moment of change, and a longer time horizon.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ],
+      "options": [
+        {
+          "id": "A",
+          "text": "A moment after which the direction of events changes."
+        },
+        {
+          "id": "B",
+          "text": "Something I already do without thinking about it."
+        },
+        {
+          "id": "C",
+          "text": "The reason that motivates me to act."
+        },
+        {
+          "id": "D",
+          "text": "Over a longer period, after the immediate effects."
+        }
+      ]
+    },
+    {
+      "id": "D001-T10",
+      "type": "chunk_cloze",
+      "sectionId": "vocabulary",
+      "prompt": "Fill each blank with one of these exact chunks: what drives me / a turning point / in the long run. Use each once.\n1. The desire to make public transport easier to use is ___.\n2. Getting that first community grant was ___ in the project’s history.\n3. The new system costs more to set up, but it should save us money ___.",
+      "responseType": "gap_fill",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 3,
+        "rubric": "Award 1 for each correct numbered blank. Normalise case, punctuation and apostrophes only. Preserve the lexical wording.",
+        "acceptedAnswers": [
+          "what drives me",
+          "a turning point",
+          "in the long run"
+        ]
+      },
+      "dependencies": [
+        "vocabulary",
+        "D001-T09"
+      ],
+      "feedback": "Check whether each gap needs a motivation, a change event or a time expression.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ]
+    },
+    {
+      "id": "D001-T11",
+      "type": "pragmatics",
+      "sectionId": "writing",
+      "prompt": "Write two labelled sentences using ‘what drives me’. In the first, speak to someone you’ve just met at a community event. In the second, speak to a professional contact. Keep the underlying motivation the same.",
+      "responseType": "short_text",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 4,
+        "rubric": "Award 1 per appropriate register, 1 if both versions fit the situation and preserve the motivation, and 1 for accurate, natural use of the target expression. Open response."
+      },
+      "dependencies": [
+        "writing",
+        "reading-models"
+      ],
+      "feedback": "Compare what changes between your two sentences. Keep the reason stable and tailor the detail to each listener.",
+      "tutorRules": [
+        "After submission, offer a contrasting pair about helping first-time visitors find their way. Explain one register choice in each version."
+      ]
+    },
+    {
+      "id": "D001-T12",
+      "type": "think_in_english",
+      "sectionId": "speaking",
+      "prompt": "Wait for an unexpected follow-up. Start speaking within 15 seconds of receiving it. Without notes, answer in English and paraphrase one key idea using different wording. Speak for 60–120 seconds total, including your paraphrase.",
+      "responseType": "audio_recording",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 5,
+        "rubric": "Check start latency and total speaking duration separately against the approved D001-T12 timing. Award 1 each for a relevant answer, connected fluent delivery, meaning-preserving reformulation, appropriate lexical control, and intelligibility verified from audio."
+      },
+      "dependencies": [
+        "speaking"
+      ],
+      "feedback": "Identify one idea you expressed clearly and one phrase you could reformulate. Use audio evidence for comments on delivery.",
+      "tutorRules": [
+        "Reveal only one unseen question when the learner is ready, then start the 15-second start window. Choose one: Which detail would you remove if the audience already knew your role, and what would you use instead? | How would you describe the same strength to a listener who doubts its relevance? | What would you change if a new listener wanted an example rather than a general claim?",
+        "After submission, give up to three prioritised points. If audio is unavailable, leave intelligibility unassessed."
+      ]
+    },
+    {
+      "id": "D001-T13",
+      "type": "real_world_output",
+      "sectionId": "speaking",
+      "prompt": "Record a two-minute personal introduction for a community group and a 90-second professional introduction for a networking event. Use two labelled segments. After the introductions, say one realistic follow-up question that either listener might ask. Keep the introductions within their own time targets.",
+      "responseType": "audio_recording",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 10,
+        "rubric": "Task 3: one for each complete timed introduction and one for a realistic listener follow-up. Discourse 2: clear sequence and relevant supporting detail. Accuracy 2: controlled time reference and grammar. Range 2: varied, appropriate vocabulary and structures. Register 1: recognisable adjustment for each audience. For two-point criteria, award 2 if consistently demonstrated, 1 if partly demonstrated, 0 if absent. Log thought grouping separately from the score using audio."
+      },
+      "dependencies": [
+        "speaking",
+        "reading-models",
+        "pronunciation"
+      ],
+      "feedback": "Compare what each listener learns about your role, motivation and strengths. Listen back and choose a phrase boundary to improve.",
+      "tutorRules": [
+        "Give an English clue first. Keep keys and model answers hidden until submission."
+      ]
+    },
+    {
+      "id": "D001-T14",
+      "type": "surprise_recall",
+      "sectionId": "same-day-review",
+      "prompt": "Put away the Day 001 texts and notes. Recall four different lexical chunks introduced today. Write four short examples, each using one of the chunks in a new situation. Use a context different from the lesson examples.",
+      "responseType": "short_text",
+      "scoring": {
+        "mode": "rubric",
+        "maxPoints": 4,
+        "rubric": "Award 1 per distinct Day 001 chunk used correctly and naturally in a new context, up to 4. A repeated chunk, incorrect use or copied context earns no additional point. Prior-lesson material is unnecessary."
+      },
+      "dependencies": [
+        "same-day-review",
+        "D001-T09",
+        "D001-T10"
+      ],
+      "feedback": "After submitting, compare your examples with the Day 001 bank. Revise one sentence so the context makes the meaning clear.",
+      "tutorRules": [
+        "Hide the bank until submission. Judge exact chunk recognition and its use in context. Begin delayed retrieval in subsequent lessons."
+      ]
+    }
+  ],
+  "review": {
+    "retrievalPrompts": [
+      "In subsequent lessons, introduce yourself without notes in a new setting and recall Day 001 language as scheduled.",
+      "After at least seven days, use four Day 001 chunks in unfamiliar contexts and revisit two targets for tense control or discourse linking."
+    ],
+    "delayedTransfer": "In a subsequent lesson, introduce yourself to a new volunteer team with a different purpose from Day 001. Give one example, qualify a claim and respond to an unseen follow-up. Collect the production and review it against discourse, accuracy, range, register and intelligibility."
+  },
+  "quality": {
+    "editorialApproved": false,
+    "answerKeyVerified": false,
+    "audioReviewed": false,
+    "notes": [
+      "Scenario A passage only: 495 whitespace-separated words. Approved 450–550 range applied.",
+      "Listening audio pending. Recording target 3–5 minutes. Script evidence is provisional; no duration, asset reference or timecode is verified. Keep T04–T06 unavailable for listening assessment until audio and anchors are verified.",
+      "D001-T12 and T14 follow Project Decisions dated 2026-11-11. All QA flags remain false.",
+      "Private tutor guidance: offer an English semantic hint without disclosing keys before submission. On explicit request only, explain the selected point in Russian in up to 120 words, then return to English retrieval. Below 70% across T07–T10, supply two controlled items and four retrieval cards focused on the first two chunks. The spec's extension rule is ≥85% plus T13 ≥8/10; confirm the percentage denominator before enabling it. Give up to three prioritised speaking feedback points. Schedule review on +1/+3/+7/+14/+30 learner-active days and adapt without blocking progress.",
+      "Draft transport decisions and unresolved integration details are documented in reports/D001_json_QA_v0.1.md."
+    ]
+  }
+}

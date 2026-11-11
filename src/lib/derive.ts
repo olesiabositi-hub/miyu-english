@@ -66,7 +66,10 @@ export function skillEvidence(s: State) {
       const a = lp.answers[t.id];
       const k = skillOf(lesson, t);
       if (!a || !k) continue;
+      if (a.detail?.practiceMode === 'transcript') continue; // script practice is not listening evidence
+      if (a.detail?.via === 'text' && k === 'Speaking') continue; // written plan is not speaking evidence
       if (a.firstStatus === 'correct' || a.firstStatus === 'incorrect') { acc[k].checked++; if (a.firstStatus === 'correct') acc[k].firstTry++; }
+      else if (a.detail?.choiceCorrect != null) { acc[k].checked++; if (a.detail.choiceCorrect) acc[k].firstTry++; acc[k].submitted++; }
       else acc[k].submitted++;
     }
   }

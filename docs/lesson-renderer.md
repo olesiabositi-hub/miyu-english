@@ -129,6 +129,13 @@ Multi-language proposals (Greek, Danish…) are collected in `docs/contract-prop
 | Q6 | Module index (13 modules, days, skills, lesson list) — which file does Codex own? | `content/courses/english/course.json → modules` (site-owned titles from the brief, lessons empty) |
 | Q7 | The contract says keys must never reach learners before submission. A static site cannot fully hide them. | Owner accepted for MVP (decision 0002); keys are hashed, `tutorRules` removed. Real protection needs a server check |
 
+## 8a. D001 pilot additions (decision 0005)
+
+- **Choice + justification** (T01, T03), **per-pair matching** (T09), **per-blank gaps** (T10), **open answers with rubric + model answer after submission** (T02, T05–T08, T11, T14), **self-check buttons** (not scored).
+- **Transcript practice**: listening sections without audio open the script, hide production cues, label every task “not a listening score”; answers are excluded from the skills profile.
+- **Speaking recorder** (`src/app/lesson/speaking.ts`): segments with time targets, unseen follow-up question with a 15 s start window (guidance only), recordings kept in IndexedDB on the device with download/delete, written alternative that is never counted as speaking. Pronunciation sections get an unscored two-take practice recorder.
+- Nothing is uploaded; no automatic speaking assessment; no reviewer exists for `manual` tasks.
+
 ## 9. Adding lessons D002–D090
 
 No site change is needed: Codex adds `content/lessons/D0NN.json`, CI validates, owner sets `status`

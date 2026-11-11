@@ -43,7 +43,7 @@ export function renderHome(el: HTMLElement): Cleanup {
     const done = stepsDone(lesson, lp);
     const segs = steps.map((_, i) => `<span class="${i < done ? 'on' : ''}"></span>`).join('');
     hero = `<div class="resume__body">
-      <span class="eyebrow">Lesson ${lesson.sequence} of ${totalLessons()}</span>
+      <span class="eyebrow">Lesson ${lesson.sequence} of ${totalLessons()}${lesson.pilot ? ' · Pilot — not methodologically approved' : ''}</span>
       <h2 class="display resume__title">${esc(lesson.title)}</h2>
       <div class="resume__progress">
         <div class="resume__meta"><span>${done} of ${steps.length} steps completed</span><span>${canPersist() ? 'Saved' : ''}</span></div>
@@ -134,7 +134,7 @@ export function renderLessons(el: HTMLElement): Cleanup {
     const rows = published.map((L) => {
       const lp = s.lessons[progressKey(L)];
       const state = lp?.completedAt ? 'Completed' : lp ? `In progress · ${stepsDone(L, lp)}/${buildSteps(L).length} steps` : 'Not started';
-      return `<li><a class="lesson-row" href="#/lesson/${routeId(L)}"><span class="lesson-row__num">${L.sequence}</span><span class="lesson-row__title">${esc(L.title)}${L.status !== 'approved' && L.status !== 'published' ? ` <span class="tag">${esc(L.status)}</span>` : ''}</span><span class="lesson-row__state">${state}</span></a></li>`;
+      return `<li><a class="lesson-row" href="#/lesson/${routeId(L)}"><span class="lesson-row__num">${L.sequence}</span><span class="lesson-row__title">${esc(L.title)}${L.pilot ? ' <span class="tag tag--pilot">Pilot</span>' : L.status !== 'approved' && L.status !== 'published' ? ` <span class="tag">${esc(L.status)}</span>` : ''}</span><span class="lesson-row__state">${state}</span></a></li>`;
     }).join('');
     return `<details class="module card" ${status === 'current' ? 'open' : ''}>
       <summary><span class="module__num">${pad2(m.number)}</span><span class="display module__title">${esc(m.title)}</span>

@@ -136,7 +136,9 @@ describe('multi-course platform', () => {
     expect(c.config.id).toBe('english');
     expect(c.config.contractVersion).toBe('1.0.0');
     expect((c.config as Record<string, unknown>).contract).toBeUndefined();
-    expect(c.lessons).toHaveLength(0); // demo is draft and lives in fixtures; no approved lessons yet
+    // only the owner-approved pilot is released; the demo is draft and lives in fixtures
+    expect(c.lessons.map((l) => l.id)).toEqual(['D001']);
+    expect(c.lessons[0].pilot).toBe(true);
     expect(c.demo?.demo).toBe(true);
   });
   it('unknown lesson schema versions fail loudly instead of rendering wrongly', () => {
