@@ -1,5 +1,7 @@
-/* The Grand Academy — design tokens (approved 11.11.2026) */
-:root {
+/* Theme: The Grand Academy — MIYU English (approved 11.11.2026).
+ * A course theme only sets tokens. Components never hard-code colours or fonts.
+ * New course theme = new file in src/themes/ + entry in src/themes/index.ts + course.json "theme". */
+:root, [data-theme='grand-academy'] {
   --night: #0E1726;
   --night-2: #16233A;
   --night-deep: #0A111D;
@@ -34,6 +36,8 @@
 
   --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* learning-content font; scripts the display face lacks fall back via :lang() rules in themes/scripts.css */
+  --font-content: var(--font-ui);
 
   --r-sm: 12px;
   --r-md: 18px;

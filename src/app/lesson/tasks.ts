@@ -1,6 +1,8 @@
 import type { PublicLesson, PublicTask, ResponseType } from '../../lib/contract';
 import { blankCount, BLANK, type Response } from '../../lib/answer-key';
 import { evaluate, revealChoiceKey, canAutoCheck } from '../../lib/scoring';
+import type { MatchRules } from '../../lib/answer-key';
+import { paletteHtml, wirePalette } from './char-palette';
 import { load, recordAnswer, saveDraft, markRevealed, type Answer } from '../../lib/progress';
 import { taskFinished } from '../../lib/derive';
 import { taskNumber } from '../../lib/lesson-model';
@@ -12,6 +14,13 @@ import { setTutorTask } from '../tutor';
 export interface TaskEnv {
   lesson: PublicLesson;
   key: string; // progress key
+  /** answer matching rules of the course (language, case, diacritics) */
+  rules: MatchRules;
+  /** BCP 47 code + direction of the learning content, for lang/dir attributes */
+  lang: string;
+  dir: 'ltr' | 'rtl';
+  languageName: string;
+  specialCharacters?: string[];
   onSubmitted(task: PublicTask, answer: Answer): void;
   showEvidence(task: PublicTask): void;
   hasEvidence(task: PublicTask): boolean;
@@ -35,7 +44,8 @@ function seededOrder(ids: string[], seed: string): string[] {
 
 export interface TaskCtl { redraw(): void; destroy(): void }
 export function mountTask(host: HTMLElement, task: PublicTask, env: TaskEnv): TaskCtl {
-  const { lesson, key } = env;
+  const { lesson, key, lang, dir } = env;
+  const L = `lang="${esc(lang)}" dir="${dir}"`;
   const n = taskNumber(lesson, task.id);
   const uid = task.id.replace(/[^\w-]/g, '');
   const isOpen = task.responseType === 'long_text' || task.responseType === 'self_reflection' || task.responseType === 'audio_recording';
@@ -55,6 +65,13 @@ export function mountTask(host: HTMLElement, task: PublicTask, env: TaskEnv): Ta
     });
   };
 
+  /** Pronunciation: when the task's section has approved audio, offer it as the model to imitate. */
+  function modelAudioHtml(): string {
+    const sec = lesson.sections.find((s) => s.id === task.sectionId);
+    if (!sec?.audio?.length) return sec && (sec.type === 'pronunciation' || sec.missingAssets) ? `<p class="muted-sm model-audio model-audio--missing">Model audio for this task is being prepared.</p>` : '';
+    return `<div class="model-audio"><span class="eyebrow">Listen to the model, then record yourself and compare</span>${sec.audio.map((src) => `<audio controls preload="none" src="${esc(src)}"></audio>`).join('')}</div>`;
+  }
+
   function inputHtml(a: Answer | undefined, locked: boolean): string {
     const resp = a?.response;
     const dis = locked ? 'disabled' : '';
@@ -69,7 +86,7 @@ export function mountTask(host: HTMLElement, task: PublicTask, env: TaskEnv): Ta
           ${opts.map((o, i) => {
             const sel = chosen.has(o.id);
             const cls = a?.status === 'correct' && sel ? 'is-correct' : a?.status === 'incorrect' && sel ? 'is-wrong' : '';
-            return `<label class="opt ${cls} ${good.has(o.id) ? 'is-key' : ''}"><input type="${multi ? 'checkbox' : 'radio'}" name="${uid}" value="${esc(o.id)}" ${sel ? 'checked' : ''}><span class="opt__badge" aria-hidden="true">${multi ? '' : 'ABCDEFGHIJ'[i] ?? i + 1}</span><span class="opt__text">${richInline(o.text)}</span>${good.has(o.id) ? '<span class="sr-only">(correct answer)</span>' : ''}</label>`;
+            return `<label class="opt ${cls} ${good.has(o.id) ? 'is-key' : ''}"><input type="${multi ? 'checkbox' : 'radio'}" name="${uid}" value="${esc(o.id)}" ${sel ? 'checked' : ''}><span class="opt__badge" aria-hidden="true">${multi ? '' : 'ABCDEFGHIJ'[i] ?? i + 1}</span><span class="opt__text" ${L}>${richInline(o.text)}</span>${good.has(o.id) ? '<span class="sr-only">(correct answer)</span>' : ''}</label>`;
           }).join('')}</fieldset>`;
       }
       case 'ordering': {
@@ -77,20 +94,20 @@ export function mountTask(host: HTMLElement, task: PublicTask, env: TaskEnv): Ta
         const show = revealedKey ?? order;
         return `<ol class="order ${a?.status === 'correct' ? 'is-correct' : ''}" aria-label="Current order">${show.map((id, i) => {
           const o = opts.find((x) => x.id === id)!;
-          return `<li class="order__item"><span class="order__n" aria-hidden="true">${i + 1}</span><span class="order__text">${richInline(o.text)}</span>
+          return `<li class="order__item"><span class="order__n" aria-hidden="true">${i + 1}</span><span class="order__text" ${L}>${richInline(o.text)}</span>
             ${locked ? '' : `<span class="order__btns"><button type="button" class="icon-btn" data-move="${i}" data-dir="-1" aria-label="Move “${esc(o.text)}” up" ${i === 0 ? 'disabled' : ''}>↑</button><button type="button" class="icon-btn" data-move="${i}" data-dir="1" aria-label="Move “${esc(o.text)}” down" ${i === show.length - 1 ? 'disabled' : ''}>↓</button></span>`}</li>`;
         }).join('')}</ol>`;
       }
       case 'short_text':
-        return `<label class="sr-only" for="${uid}-in">Your answer</label><input class="text-in ${a?.status === 'correct' ? 'is-correct' : a?.status === 'incorrect' ? 'is-wrong' : ''}" id="${uid}-in" data-text autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(typeof resp === 'string' ? resp : '')}" ${locked ? 'readonly' : ''}>`;
+        return `<label class="sr-only" for="${uid}-in">Your answer</label>${paletteHtml(env.specialCharacters, lang)}<input type="text" ${L} class="text-in ${a?.status === 'correct' ? 'is-correct' : a?.status === 'incorrect' ? 'is-wrong' : ''}" id="${uid}-in" data-text autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(typeof resp === 'string' ? resp : '')}" ${locked ? 'readonly' : ''}>`;
       case 'gap_fill': {
         const vals = Array.isArray(resp) ? resp : typeof resp === 'string' ? [resp] : [];
         let k = 0;
         const parts = task.prompt.split(BLANK);
-        return `<p class="gap-text">${parts.map((p, i) => richInline(p) + (i < parts.length - 1 ? `<input class="gap ${a?.status === 'correct' ? 'is-correct' : a?.status === 'incorrect' ? 'is-wrong' : ''}" data-gap="${k}" aria-label="Gap ${++k}" autocomplete="off" autocapitalize="off" spellcheck="false" size="12" value="${esc(vals[k - 1] ?? '')}" ${locked ? 'readonly' : ''}>` : '')).join('')}</p>`;
+        return `${paletteHtml(env.specialCharacters, lang)}<p class="gap-text" ${L}>${parts.map((p, i) => richInline(p) + (i < parts.length - 1 ? `<input type="text" class="gap ${a?.status === 'correct' ? 'is-correct' : a?.status === 'incorrect' ? 'is-wrong' : ''}" data-gap="${k}" aria-label="Gap ${++k}" autocomplete="off" autocapitalize="off" spellcheck="false" size="12" value="${esc(vals[k - 1] ?? '')}" ${locked ? 'readonly' : ''}>` : '')).join('')}</p>`;
       }
       case 'matching':
-        return `<ul class="match-list">${opts.map((o) => `<li>${richInline(o.text)}</li>`).join('')}</ul><p class="muted-sm">Work through the pairs in your head or notes, then mark this as done.</p>`;
+        return `<ul class="match-list" ${L}>${opts.map((o) => `<li>${richInline(o.text)}</li>`).join('')}</ul><p class="muted-sm">Work through the pairs in your head or notes, then mark this as done.</p>`;
       default: return '';
     }
   }
@@ -133,15 +150,16 @@ export function mountTask(host: HTMLElement, task: PublicTask, env: TaskEnv): Ta
       <button class="task__ask" type="button" data-ask aria-label="Ask MIYU Tutor about task ${n}">${icon.spark}</button></header>`;
     if (deps.length) {
       const names = deps.map((d) => { const i = taskNumber(lesson, d); return i > 0 ? `Task ${i}` : 'the part above'; });
-      host.innerHTML = `${head}<p class="task-prompt task-prompt--muted">${richInline(task.prompt)}</p>${feedback('info', `Complete ${names.join(', ')} first.`)}`;
+      host.innerHTML = `${head}<p class="task-prompt task-prompt--muted" ${L}>${richInline(task.prompt)}</p>${feedback('info', `Complete ${names.join(', ')} first.`)}`;
       host.classList.add('is-locked');
       return;
     }
     host.classList.remove('is-locked');
     const showPrompt = task.responseType !== 'gap_fill';
     host.innerHTML = `${head}
-      ${showPrompt ? `<p class="task-prompt" id="${uid}-p">${richInline(task.prompt)}</p>` : `<p class="sr-only" id="${uid}-p">${esc(task.prompt.replace(BLANK, 'blank'))}</p>`}
+      ${showPrompt ? `<p class="task-prompt" id="${uid}-p" ${L}>${richInline(task.prompt)}</p>` : `<p class="sr-only" id="${uid}-p">${esc(task.prompt.replace(BLANK, 'blank'))}</p>`}
       ${task.responseType === 'gap_fill' && blankCount(task.prompt) === 0 ? feedback('err', 'This task has no gap marker yet.') : ''}
+      ${task.responseType === 'audio_recording' ? modelAudioHtml() : ''}
       <div class="task__input" data-input>${isOpen ? '' : inputHtml(a, locked)}</div>
       ${!isOpen && !locked ? `<div class="task-actions"><button class="btn btn--ink" type="button" data-check>${isMatchingFallback ? 'Mark as done' : !canAutoCheck(task) ? 'Submit' : a ? 'Check again' : 'Check Answer'}</button></div>` : ''}
       <div class="task__result" data-result>${a ? resultHtml(a) : ''}</div>`;
@@ -155,6 +173,7 @@ export function mountTask(host: HTMLElement, task: PublicTask, env: TaskEnv): Ta
         allowSwitch: true,
         submitLabel: 'Submit',
         onDraft: (t) => saveDraft(key, task.id, t),
+        lang, dir, specialCharacters: env.specialCharacters, languageName: env.languageName,
         onSubmit: (value) => void submit(value),
       });
     }
@@ -164,7 +183,7 @@ export function mountTask(host: HTMLElement, task: PublicTask, env: TaskEnv): Ta
     if (busy) return;
     busy = true;
     try {
-      const ev = await evaluate(lesson, isMatchingFallback ? { ...task, scoring: { ...task.scoring, mode: 'formative' } } : task, resp);
+      const ev = await evaluate(lesson, isMatchingFallback ? { ...task, scoring: { ...task.scoring, mode: 'formative' } } : task, resp, env.rules);
       const a = recordAnswer(key, task.id, resp, ev.status, ev.score);
       draw();
       host.querySelector<HTMLElement>('[data-result] .feedback')?.setAttribute('tabindex', '-1');
@@ -208,9 +227,10 @@ export function mountTask(host: HTMLElement, task: PublicTask, env: TaskEnv): Ta
   host.addEventListener('keydown', onKey);
   host.addEventListener('input', onInput);
   host.addEventListener('focusin', () => setTutorTask({ number: n, prompt: task.prompt, attempted: !!answer() }));
+  const unwire = wirePalette(host);
   draw();
   return {
     redraw: draw,
-    destroy: () => { openCleanup?.(); host.removeEventListener('click', onClick); host.removeEventListener('keydown', onKey); host.removeEventListener('input', onInput); },
+    destroy: () => { openCleanup?.(); unwire(); host.removeEventListener('click', onClick); host.removeEventListener('keydown', onKey); host.removeEventListener('input', onInput); },
   };
 }

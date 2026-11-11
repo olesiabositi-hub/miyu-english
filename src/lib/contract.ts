@@ -37,6 +37,12 @@ export interface Lesson {
   quality: Quality;
 }
 
+/* ------------------------------------------------------------------------------------------
+ * Internal, course-agnostic lesson model used by every renderer component.
+ * Each lesson contract version has an adapter (build/adapters/) that maps it into this shape,
+ * so a future contract (e.g. for Greek A0→A2) needs an adapter, not a new renderer.
+ * ------------------------------------------------------------------------------------------ */
+
 /**
  * What the browser receives. Built from a Lesson at build time (build/lessons-plugin.ts):
  *  - answer keys are replaced by salted SHA-256 hashes (no plain keys in page source),
@@ -46,7 +52,13 @@ export interface Lesson {
 export interface PublicScoring { mode: ScoringMode; maxPoints: number; keyHashes?: string[]; keyCount?: number; rubric?: string; evidenceSpanIds?: string[] }
 export interface PublicTask extends Omit<Task, 'scoring' | 'tutorRules'> { scoring: PublicScoring }
 export interface PublicSection extends Omit<Section, 'assetRefs'> { audio?: string[]; images?: string[]; missingAssets?: number }
-export interface PublicLesson extends Omit<Lesson, 'tasks' | 'sections' | 'quality'> {
+export interface PublicLesson extends Omit<Lesson, 'tasks' | 'sections' | 'quality' | 'level' | 'language' | 'schemaVersion'> {
+  courseId: string;
+  schemaVersion: string;
+  /** CEFR (or course-scale) level label as given by the course content */
+  level: string;
+  /** BCP 47 language of the learning content */
+  language: string;
   sections: PublicSection[];
   tasks: PublicTask[];
   quality: Omit<Quality, 'notes'>;
@@ -57,3 +69,27 @@ export interface PublicLesson extends Omit<Lesson, 'tasks' | 'sections' | 'quali
 /** Publishing gate from the contract: approved/published AND every QA flag true. */
 export const isPublishable = (l: Pick<Lesson, 'status' | 'quality'>) =>
   (l.status === 'approved' || l.status === 'published') && l.quality.editorialApproved && l.quality.answerKeyVerified && l.quality.audioReviewed;
+
+/* ---------------------------------- Course configuration ---------------------------------- */
+export type FeatureState = 'available' | 'planned' | 'off';
+export interface CourseModule { id: string; number: number; title: string; days?: string; skills?: string[]; lessons: { id: string; number: number; title: string }[] }
+export interface CourseConfig {
+  id: string;
+  title: string;
+  tagline?: string;
+  targetLanguage: { code: string; name: string; script: string; dir: 'ltr' | 'rtl' };
+  uiLanguage: string;
+  explanationLanguages?: string[];
+  levels: { from: string; to: string; scale: string[]; framework?: string };
+  totalLessons: number;
+  contract: { version: string; schema: string; lessonsDir: string; assetsDir: string; lessonIdPattern: string };
+  theme: string;
+  answerMatching: { caseSensitive: boolean; ignoreDiacritics: boolean; ignoreTrailingPunctuation: boolean };
+  input?: { specialCharacters?: string[] };
+  features?: Record<string, FeatureState>;
+  practice?: { quickChallenges?: { prompt: string; seconds?: number }[] };
+  modules: CourseModule[];
+}
+/** Course as shipped to the browser: config + its published lessons (+ optional interface demo). */
+export interface PublicCourse { config: Omit<CourseConfig, 'contract'> & { contractVersion: string }; lessons: PublicLesson[]; demo: PublicLesson | null }
+export interface SiteConfig { defaultCourse: string; courses: string[] }

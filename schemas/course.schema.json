@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://miyu.academy/schemas/course.schema.json",
+  "title": "MIYU Language Academy — course configuration v1",
+  "description": "Site-side configuration of one language course. Lesson files keep following their own lesson contract (contract.schema).",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "targetLanguage",
+    "uiLanguage",
+    "levels",
+    "totalLessons",
+    "contract",
+    "theme",
+    "answerMatching",
+    "modules"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "_note": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,30}$",
+      "description": "URL-safe course id, also the progress namespace"
+    },
+    "title": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "targetLanguage": {
+      "type": "object",
+      "required": [
+        "code",
+        "name",
+        "script",
+        "dir"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "BCP 47, e.g. en, el, da"
+        },
+        "name": {
+          "type": "string"
+        },
+        "script": {
+          "type": "string",
+          "pattern": "^[A-Z][a-z]{3}$",
+          "description": "ISO 15924, e.g. Latn, Grek, Cyrl"
+        },
+        "dir": {
+          "enum": [
+            "ltr",
+            "rtl"
+          ]
+        }
+      }
+    },
+    "uiLanguage": {
+      "type": "string",
+      "description": "Language of the interface chrome (BCP 47)"
+    },
+    "explanationLanguages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "levels": {
+      "type": "object",
+      "required": [
+        "from",
+        "to",
+        "scale"
+      ],
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "scale": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "framework": {
+          "type": "string"
+        }
+      }
+    },
+    "totalLessons": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "contract": {
+      "type": "object",
+      "required": [
+        "version",
+        "schema",
+        "lessonsDir",
+        "assetsDir",
+        "lessonIdPattern"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        },
+        "lessonsDir": {
+          "type": "string"
+        },
+        "assetsDir": {
+          "type": "string"
+        },
+        "lessonIdPattern": {
+          "type": "string"
+        }
+      }
+    },
+    "theme": {
+      "type": "string"
+    },
+    "answerMatching": {
+      "type": "object",
+      "required": [
+        "caseSensitive",
+        "ignoreDiacritics",
+        "ignoreTrailingPunctuation"
+      ],
+      "properties": {
+        "caseSensitive": {
+          "type": "boolean"
+        },
+        "ignoreDiacritics": {
+          "type": "boolean"
+        },
+        "ignoreTrailingPunctuation": {
+          "type": "boolean"
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "specialCharacters": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "available",
+          "planned",
+          "off"
+        ]
+      }
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "title",
+          "lessons"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "days": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lessons": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "number",
+                "title"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "integer"
+                },
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "practice": {
+      "type": "object",
+      "description": "Short practice prompts shown in Practice (text from the approved brief / curriculum team)",
+      "properties": {
+        "quickChallenges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string"
+              },
+              "seconds": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

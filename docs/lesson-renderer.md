@@ -9,22 +9,24 @@ in the order the file gives, and only adds navigation, feedback states and progr
 ## 1. Data flow
 
 ```
-content/lessons/D0NN.json  (Codex, status draft → review → approved/published)
+content/courses/english/course.json   course config (levels, 90 lessons, theme, matching rules…)
+content/lessons/D0NN.json             (Codex, status draft → review → approved/published)
         │
         ├─ scripts/validate-lessons.mjs   schema + cross-field checks (CI, every push)
         │
-        ├─ build/lessons-plugin.ts        build time, Node
+        ├─ build/lessons-plugin.ts        build time, Node, per course; adapter by schemaVersion (build/adapters/v1.ts)
         │     • publishing gate: status approved|published AND all quality flags true
         │       (dev server / MIYU_PREVIEW_DRAFTS=1 also includes drafts, marked “Preview”)
         │     • answer keys  → salted SHA-256 hashes (keyHashes); plain keys never reach the browser
         │     • tutorRules, quality.notes → removed
         │     • assetRefs → resolved against public/; missing files are counted, never invented
         │
-        └─ virtual:miyu-lessons           PublicLesson[] (+ the interface demo fixture)
+        └─ virtual:miyu-courses           { site, courses: [{ config, lessons, demo }] }
                 │
                 ├─ src/lib/lesson-model.ts   view-model: steps
                 ├─ src/lib/scoring.ts        evaluation by scoring.mode
-                ├─ src/lib/progress.ts       localStorage (decision 0001)
+                ├─ src/lib/course.ts         active course (config, lessons, links)
+                ├─ src/lib/progress.ts       localStorage per course (decision 0001)
                 └─ src/app/lesson.ts         workspace UI
                      ├─ lesson/sections.ts   section renderer (text, listening, transcript, evidence)
                      ├─ lesson/tasks.ts      task card + one input per responseType
@@ -38,11 +40,13 @@ content/lessons/D0NN.json  (Codex, status draft → review → approved/publishe
 
 | Step | Source | Notes |
 |---|---|---|
-| Overview | `title`, `level`, `durationMinutes`, `outcomes`, `grammar`, module title from `content/curriculum.json` | Always first |
+| Overview | `title`, `level`, `durationMinutes`, `outcomes`, `grammar`, module title from `content/courses/english/course.json` | Always first |
 | One step per section | `sections[i]` in file order | Step title = `section.title`, eyebrow = section type label |
 | …its tasks | every task whose `sectionId` = that section, in `tasks[]` order | A task is shown exactly once |
 | Further practice | tasks with no / unknown `sectionId` | Only if such tasks exist |
 | Wrap-up | `lexicalChunks` (8), `review.retrievalPrompts`, `review.delayedTransfer` | Finishing the lesson adds chunks + prompts to Review Lab |
+
+Platform context: see `docs/platform-architecture.md`. Nothing in this renderer is English-specific.
 
 Learners can move between steps freely (any pace, lessons can be split across days). A lesson is
 **complete** when every task is finished (see §4) and the learner presses *Finish lesson*.
@@ -72,7 +76,7 @@ Every task renders as the same card: `Task N · input kind · scoring label · A
 | `audio_recording` | microphone (consent text, stop, replay, retry, error) + **Type instead** | never auto-scored; audio stays on device |
 | `self_reflection` | textarea | never auto-scored |
 
-Normalisation: Unicode NFKC, curly → straight quotes, dashes, lower case, collapse spaces, trim trailing `.!?,;:`.
+Normalisation (identical at build and in the browser, rules from `course.json → answerMatching`): Unicode NFKC, curly → straight quotes, dashes, collapse spaces; locale-aware lower case (unless `caseSensitive`); optional accent folding (`ignoreDiacritics`); trim trailing punctuation. Key hashes are salted with course id + lesson id + task id.
 
 ### Scoring modes
 
@@ -91,7 +95,7 @@ task dependency is finished / each section was visited. Cycles are rejected by t
 
 ## 5. Progress & review (browser only)
 
-`localStorage` key `miyu-english:v2`: per lesson → visited steps, current step, answers
+`localStorage` key `miyu:<courseId>:progress:v1` (one store per course): per lesson → visited steps, current step, answers
 (`response`, `status`, `score`, `attempts`, `firstStatus`), text drafts. Saved after every answer and
 while typing. Demo progress is stored under `demo:*` and never counts toward course progress.
 Skills profile (My Progress) uses only real attempts: first-attempt accuracy for auto tasks, count of
@@ -113,6 +117,8 @@ controlled key access. Until that backend exists, quick actions explain what the
 
 ## 8. Open questions for the contract (v1.1 candidates)
 
+Multi-language proposals (Greek, Danish…) are collected in `docs/contract-proposals.md`.
+
 | # | Question | Current behaviour |
 |---|---|---|
 | Q1 | The design brief lists methodological stages (Surprise Recall, Discover, Language Lab, Practice, Think in English, Real-Life Challenge, Wrap-up). The schema has no stage field. Should `section.title` carry the stage, or do we add `section.stage`? | Rail shows `section.title` in file order |
@@ -120,7 +126,7 @@ controlled key access. Until that backend exists, quick actions explain what the
 | Q3 | Partial credit for `multiple_choice` / multi-gap (`maxPoints` > 1)? | All-or-nothing |
 | Q4 | `feedback` is one string shown after submission. Do we want `feedback.correct` / `feedback.incorrect` / `hint` separately? | Shown after a correct answer or the 2nd attempt |
 | Q5 | Image alt text — `assetRefs` cannot carry it. | Images treated as decorative (`alt=""`) |
-| Q6 | Module index (13 modules, days, skills, lesson list) — which file does Codex own? | `content/curriculum.json` (site-owned titles from the brief, lessons empty) |
+| Q6 | Module index (13 modules, days, skills, lesson list) — which file does Codex own? | `content/courses/english/course.json → modules` (site-owned titles from the brief, lessons empty) |
 | Q7 | The contract says keys must never reach learners before submission. A static site cannot fully hide them. | Owner accepted for MVP (decision 0002); keys are hashed, `tutorRules` removed. Real protection needs a server check |
 
 ## 9. Adding lessons D002–D090

@@ -1,4 +1,5 @@
 import { esc, icon, feedback } from './ui';
+import { paletteHtml, wirePalette } from './lesson/char-palette';
 
 export interface OpenOpts {
   id: string;
@@ -11,6 +12,11 @@ export interface OpenOpts {
   allowSwitch?: boolean;
   submitLabel?: string;
   onDraft?: (text: string) => void;
+  /** language/direction of the learner's answer (course target language) */
+  lang?: string;
+  languageName?: string;
+  dir?: 'ltr' | 'rtl';
+  specialCharacters?: string[];
   onSubmit: (value: string, via: 'text' | 'audio') => void;
 }
 
@@ -42,8 +48,8 @@ export function mountOpenResponse(root: HTMLElement, o: OpenOpts): () => void {
     let body: string;
     if (mode === 'write') {
       const n = words(text);
-      body = `<label class="sr-only" for="${uid}">Your answer</label>
-        <textarea id="${uid}" rows="5" placeholder="Write your answer in English…" aria-describedby="${uid}-wc">${esc(text)}</textarea>
+      body = `<label class="sr-only" for="${uid}">Your answer</label>${paletteHtml(o.specialCharacters, o.lang ?? 'en')}
+        <textarea id="${uid}" rows="5" ${o.lang ? `lang="${esc(o.lang)}"` : ''} ${o.dir ? `dir="${o.dir}"` : ''} spellcheck="false" placeholder="${o.languageName ? `Write your answer in ${esc(o.languageName)}…` : 'Write your answer…'}" aria-describedby="${uid}-wc">${esc(text)}</textarea>
         <div class="or__bar"><span id="${uid}-wc" class="muted-sm">${countLabel(n)}</span>
         <button class="btn btn--ink" type="button" data-or-save ${n === 0 ? 'aria-disabled="true"' : ''}>${submitted ? 'Update answer' : o.submitLabel ?? 'Submit'}</button></div>`;
     } else {
@@ -109,10 +115,12 @@ export function mountOpenResponse(root: HTMLElement, o: OpenOpts): () => void {
   };
   root.addEventListener('click', onClick);
   root.addEventListener('input', onInput);
+  const unwire = o.specialCharacters?.length ? wirePalette(root) : () => {};
   draw();
   return () => {
     root.removeEventListener('click', onClick);
     root.removeEventListener('input', onInput);
+    unwire();
     if (recorder?.state === 'recording') recorder.stop();
     stopStream();
     if (o.onDraft && draftTimer) { clearTimeout(draftTimer); o.onDraft(text); }

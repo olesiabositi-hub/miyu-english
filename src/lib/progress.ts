@@ -1,15 +1,21 @@
 // All learner progress lives in this browser (docs/decisions/0001). No accounts, no server.
+// Each course has its own independent store: localStorage "miyu:<courseId>:progress:v1".
+// The learner's name is shared across courses: "miyu:profile:v1".
 import type { TaskStatus } from './scoring';
 import type { Response } from './answer-key';
+import { activeCourse } from './course';
 
-const KEY = 'miyu-english:v2';
+const keyFor = (courseId: string) => `miyu:${courseId}:progress:v1`;
+const PROFILE_KEY = 'miyu:profile:v1';
+const LEGACY_EN_KEY = 'miyu-english:v2';
 const DAY = 86_400_000;
 
 export interface Answer { response: Response; status: TaskStatus; score: number | null; attempts: number; firstStatus: TaskStatus; revealed?: boolean; updatedAt: number }
 export interface LessonProgress { stepIndex: number; visited: string[]; answers: Record<string, Answer>; drafts: Record<string, string>; startedAt: number; updatedAt: number; completedAt?: number }
 export interface ReviewItem { id: string; kind: 'chunk' | 'prompt'; front: string; lessonKey: string; box: number; due: number }
 export interface State {
-  version: 2;
+  version: 1;
+  courseId: string;
   createdAt: number;
   lastVisit: number;
   previousVisit?: number;
@@ -18,29 +24,40 @@ export interface State {
   lessons: Record<string, LessonProgress>;
   review: ReviewItem[];
   daily: Record<string, number>;
-  name?: string;
 }
 
-const fresh = (): State => ({ version: 2, createdAt: Date.now(), lastVisit: Date.now(), diagnostic: 'none', lessons: {}, review: [], daily: {} });
+const fresh = (courseId: string): State => ({ version: 1, courseId, createdAt: Date.now(), lastVisit: Date.now(), diagnostic: 'none', lessons: {}, review: [], daily: {} });
 
-let memory: State | null = null;
+const memory = new Map<string, State>();
 let storageOk = true;
+const cid = () => activeCourse().config.id;
 
-export function load(): State {
-  if (memory) return memory;
+/** Progress of the active course (or of a given course). */
+export function load(courseId = cid()): State {
+  const hit = memory.get(courseId);
+  if (hit) return hit;
+  let st: State;
   try {
-    const raw = localStorage.getItem(KEY);
-    memory = raw ? { ...fresh(), ...JSON.parse(raw) } : fresh();
+    let raw = localStorage.getItem(keyFor(courseId));
+    if (!raw && courseId === 'english') raw = localStorage.getItem(LEGACY_EN_KEY); // pre-platform builds
+    st = raw ? { ...fresh(courseId), ...JSON.parse(raw), version: 1, courseId } : fresh(courseId);
   } catch {
     storageOk = false;
-    memory = fresh();
+    st = fresh(courseId);
   }
-  return memory!;
+  memory.set(courseId, st);
+  return st;
 }
-export function save(): void {
-  if (!memory) return;
-  try { localStorage.setItem(KEY, JSON.stringify(memory)); storageOk = true; } catch { storageOk = false; }
+export function save(courseId = cid()): void {
+  const st = memory.get(courseId);
+  if (!st) return;
+  try { localStorage.setItem(keyFor(courseId), JSON.stringify(st)); storageOk = true; } catch { storageOk = false; }
 }
+
+/* ---- profile shared by all courses ---- */
+export interface Profile { name?: string }
+export function loadProfile(): Profile { try { return JSON.parse(localStorage.getItem(PROFILE_KEY) ?? '{}'); } catch { return {}; } }
+export function saveProfile(p: Profile): void { try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch { storageOk = false; } }
 export const canPersist = () => storageOk;
 export function update(fn: (s: State) => void): State { const s = load(); fn(s); save(); return s; }
 
@@ -99,6 +116,7 @@ export const dueReview = (s: State) => s.review.filter((r) => r.due <= Date.now(
 export const today = () => new Date().toISOString().slice(0, 10);
 export function logDaily(minutes: number): void { update((s) => { s.daily[today()] = (s.daily[today()] ?? 0) + minutes; }); }
 
-export function reset(): void { memory = fresh(); save(); }
-export function exportJson(): string { return JSON.stringify(load(), null, 2); }
-export function __resetMemory(): void { memory = null; }
+/** Resets only the active course. */
+export function reset(): void { memory.set(cid(), fresh(cid())); save(); }
+export function exportJson(): string { return JSON.stringify({ profile: loadProfile(), progress: load() }, null, 2); }
+export function __resetMemory(): void { memory.clear(); }

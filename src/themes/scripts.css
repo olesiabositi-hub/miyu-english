@@ -1,0 +1,10 @@
+/* Script-aware font fallbacks for learning content. Applied by lang attributes that the
+ * renderer puts on every piece of course content (course.json → targetLanguage.code).
+ * Inter covers Latin, Greek and Cyrillic; Noto families are the fallback for everything else. */
+:lang(el) { --font-display: 'Noto Serif', 'GFS Didot', Georgia, serif; font-feature-settings: normal; }
+:lang(el) .gap, :lang(el).text-in { letter-spacing: 0; }
+:lang(ka) { --font-ui: 'Noto Sans Georgian', Inter, system-ui, sans-serif; --font-display: 'Noto Serif Georgian', Georgia, serif; }
+:lang(ar), :lang(he), :lang(fa) { --font-ui: 'Noto Sans Arabic', 'Noto Sans Hebrew', system-ui, sans-serif; }
+[lang] .reading, .reading[lang], .task-prompt[lang], .opt__text[lang] { hyphens: auto; }
+/* IPA / transcription spans if a future contract provides them */
+.ipa { font-family: 'Noto Sans', 'Doulos SIL', 'Charis SIL', var(--font-ui); font-style: normal; letter-spacing: .01em; }

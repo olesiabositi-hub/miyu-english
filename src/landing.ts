@@ -1,4 +1,9 @@
-import { modules, pad2, esc, type Module } from './lib/curriculum';
+// The landing page belongs to one course (English); it reads that course's config directly.
+import course from '../content/courses/english/course.json';
+import { pad2, esc } from './lib/text';
+import type { CourseModule as Module } from './lib/contract';
+
+const modules = course.modules as Module[];
 
 /* Sticky header after the hero starts scrolling away */
 const header = document.querySelector<HTMLElement>('[data-header]')!;
